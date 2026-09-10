@@ -50,6 +50,8 @@
       map.fitBounds(group.getBounds().pad(0.15));
     }
 
+    renderDiagnostic(stops, valid);
+
     // Line connecting visited stops, through today's (current) stop, in date order
     const path = valid
       .filter((s) => s.status === "visited" || s.status === "current")
@@ -78,6 +80,17 @@
     App.$("#stat-nights").textContent = nights;
     App.$("#stat-miles").textContent = miles.toLocaleString();
     App.$("#stat-states").textContent = states.size;
+  }
+
+  function renderDiagnostic(stops, valid) {
+    const el = App.$("#debug-line");
+    if (!el) return;
+    let text = `Data check: ${stops.length} stop${stops.length === 1 ? "" : "s"} loaded from your sheet, ${valid.length} with usable coordinates.`;
+    if (stops.length > 0 && valid.length === 0) {
+      const first = stops[0];
+      text += ` First stop "${first.name}" — raw Latitude: "${first._rawLatitude || "(blank)"}", raw Longitude: "${first._rawLongitude || "(blank)"}".`;
+    }
+    el.textContent = text;
   }
 
   function escapeHtml(str) {

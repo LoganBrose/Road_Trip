@@ -183,6 +183,8 @@ App.loadStops = () => App.loadSheetTab(CONFIG.STOPS_CSV_URL, "data/demo-stops.cs
           state: o.state,
           latitude: App.toNumber(o.latitude),
           longitude: App.toNumber(o.longitude),
+          _rawLatitude: o.latitude,
+          _rawLongitude: o.longitude,
           arrival_date: o.arrival_date,
           nights: App.toNumber(o.nights),
           status: App.normalizeStatus(o.status),
