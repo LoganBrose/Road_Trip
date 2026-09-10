@@ -59,7 +59,7 @@
       .map((s) => [s.latitude, s.longitude]);
 
     if (path.length > 1) {
-      L.polyline(path, { color: "#c9cdd6", weight: 3, opacity: 0.8, dashArray: "6 6" }).addTo(map);
+      L.polyline(path, { color: "#5dade2", weight: 3, opacity: 0.8, dashArray: "6 6" }).addTo(map);
     }
 
     renderStats(valid);
