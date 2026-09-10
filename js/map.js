@@ -32,7 +32,7 @@
       }).addTo(map);
 
       marker.bindPopup(`
-        <h3>${escapeHtml(stop.name)}${stop.state ? ", " + escapeHtml(stop.state) : ""}</h3>
+        <h3>${escapeHtml(App.displayName(stop))}</h3>
         <div><span class="status-badge" style="background:${color};color:${textColor}">${App.statusLabel(stop.status)}</span></div>
         ${stop.arrival_date ? `<div class="popup-row">📅 ${App.formatDate(stop.arrival_date)}${stop.nights != null ? " · " + stop.nights + " night" + (stop.nights === 1 ? "" : "s") : ""}</div>` : ""}
         ${stop.mileage != null ? `<div class="popup-row">🚗 ${stop.mileage.toLocaleString()} mi${stop.drive_hours != null ? " · " + stop.drive_hours + " hr" : ""}</div>` : ""}
