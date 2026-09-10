@@ -34,5 +34,5 @@ const CONFIG = {
   // adjust if your route is centered elsewhere.
   MAP_START_VIEW: { lat: 39.5, lng: -98.5, zoom: 4 },
 
-  TRIP_NAME: "Our Road Trip"
+  TRIP_NAME: "Logan's Road Trip"
 };
