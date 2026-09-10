@@ -272,6 +272,15 @@ the site still shows old data, wait a few minutes and reload (a hard reload
 — pull down to refresh, or reload the browser tab). This is normal and not
 a bug.
 
+**A different quirk, for code changes specifically:** browsers cache
+`css/style.css` and the files in `js/` fairly aggressively. Every `<link>`
+and `<script>` tag in the HTML files points at these with a `?v=5` on the
+end — if you (or I) edit any CSS/JS file and things don't look updated,
+bump that number (e.g. `?v=6`) in all four HTML files so browsers are
+forced to fetch the new version instead of an old cached copy. The
+surest way to check if that's the problem: open the site in a Private/
+Incognito tab, which never uses the cache.
+
 ---
 
 ## 8. Adding photos
