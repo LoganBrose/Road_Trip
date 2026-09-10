@@ -194,6 +194,8 @@ App.loadStops = () => App.loadSheetTab(CONFIG.STOPS_CSV_URL, "data/demo-stops.cs
           longitude: App.toNumber(o.longitude),
           _rawLatitude: o.latitude,
           _rawLongitude: o.longitude,
+          _rawNights: o.nights,
+          _rawMileage: o.mileage,
           arrival_date: o.arrival_date,
           nights: App.toNumber(o.nights),
           status: App.normalizeStatus(o.status),
@@ -207,7 +209,7 @@ App.loadStops = () => App.loadSheetTab(CONFIG.STOPS_CSV_URL, "data/demo-stops.cs
         };
       })
       .sort((a, b) => App.parseDate(a.arrival_date) - App.parseDate(b.arrival_date));
-    return { rows, usedDemo };
+    return { rows, usedDemo, headers };
   });
 
 App.loadSpending = () => App.loadSheetTab(CONFIG.SPENDING_CSV_URL, "data/demo-spending.csv", HEADER_ROW_INDEX)

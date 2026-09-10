@@ -13,7 +13,7 @@
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  App.loadStops().then(({ rows: stops, usedDemo }) => {
+  App.loadStops().then(({ rows: stops, usedDemo, headers }) => {
     App.initPageChrome([usedDemo]);
 
     const valid = stops.filter((s) => s.latitude != null && s.longitude != null);
@@ -50,7 +50,7 @@
       map.fitBounds(group.getBounds().pad(0.15));
     }
 
-    renderDiagnostic(stops, valid);
+    renderDiagnostic(stops, valid, headers);
 
     // Line connecting visited stops, through today's (current) stop, in date order
     const path = valid
@@ -82,13 +82,14 @@
     App.$("#stat-states").textContent = states.size;
   }
 
-  function renderDiagnostic(stops, valid) {
+  function renderDiagnostic(stops, valid, headers) {
     const el = App.$("#debug-line");
     if (!el) return;
     let text = `Data check: ${stops.length} stop${stops.length === 1 ? "" : "s"} loaded from your sheet, ${valid.length} with usable coordinates.`;
     if (stops.length > 0 && valid.length === 0) {
       const first = stops[0];
-      text += ` First stop "${first.name}" — raw Latitude: "${first._rawLatitude || "(blank)"}", raw Longitude: "${first._rawLongitude || "(blank)"}".`;
+      text += ` First stop "${first.name}" — raw Latitude: "${first._rawLatitude || "(blank)"}", raw Longitude: "${first._rawLongitude || "(blank)"}", raw Nights: "${first._rawNights || "(blank)"}", raw Miles: "${first._rawMileage || "(blank)"}".`;
+      text += ` Headers read from row 3: [${(headers || []).map((h) => `"${h}"`).join(", ")}]`;
     }
     el.textContent = text;
   }
