@@ -1,22 +1,28 @@
 /*
-  CONFIG — the only file you need to edit to connect this site to YOUR Google Sheet.
+  CONFIG — connects the site to your real Google Sheet.
 
-  How to get each URL is explained in README.md under "Connect your Google Sheet".
-  Short version: File > Share > Publish to web, pick the tab, pick CSV, copy the link.
+  These URLs read directly from the published sheet (id 2PACX-1vQqv...),
+  one per tab, using each tab's "gid" (the number that identifies a tab —
+  visible in the address bar when that tab is open in Google Sheets).
 
-  Until you paste real links below, the site automatically shows demo data from the
-  /data folder so you can see everything working first.
+  If you ever add a new tab or need to reconnect one, see README.md
+  section 5 for how to find a tab's gid and rebuild its URL.
 */
+const SHEET_PUBLISH_ID = "2PACX-1vQqvcJs71KvJB69qL7LdRgH8eVY6fjn398AUqWAggEuWffbzJo_MpiuiURTR0tjsjsUiPA3gbZGdlfM";
+
+function sheetCsvUrl(gid) {
+  return `https://docs.google.com/spreadsheets/d/e/${SHEET_PUBLISH_ID}/pub?gid=${gid}&single=true&output=csv`;
+}
+
 const CONFIG = {
-  STOPS_CSV_URL: "PASTE_YOUR_STOPS_PUBLISHED_CSV_URL_HERE",
-  SPENDING_CSV_URL: "PASTE_YOUR_SPENDING_PUBLISHED_CSV_URL_HERE",
-  PHOTOS_CSV_URL: "PASTE_YOUR_PHOTOS_PUBLISHED_CSV_URL_HERE",
+  STOPS_CSV_URL: sheetCsvUrl(725734293),
+  SPENDING_CSV_URL: sheetCsvUrl(697444775),
+  BUDGET_CSV_URL: sheetCsvUrl(463352620),
+  PHOTOS_CSV_URL: sheetCsvUrl(1978429405),
 
-  // Optional: your total trip budget in dollars, e.g. 6000. Set to null to hide the budget bar.
-  TRIP_BUDGET: null,
+  // Where the map centers/zooms before any pins have loaded. Default is roughly the western US —
+  // adjust if your route is centered elsewhere.
+  MAP_START_VIEW: { lat: 39.5, lng: -98.5, zoom: 4 },
 
-  // Where the map centers/zooms before any pins have loaded. Default is roughly the western US.
-  MAP_START_VIEW: { lat: 39.5, lng: -111.5, zoom: 5 },
-
-  TRIP_NAME: "Our Western US Road Trip"
+  TRIP_NAME: "Our Road Trip"
 };

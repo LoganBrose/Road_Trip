@@ -1,21 +1,17 @@
-date,stop,category,amount,notes
-2026-06-01,San Francisco,Lodging,0,Stayed with a friend
-2026-06-01,San Francisco,Food,64.50,Dinner in the Mission
-2026-06-02,San Francisco,Activities,70.00,Alcatraz tickets
-2026-06-03,Yosemite Valley,Lodging,132.00,Curry Village tent cabin x2 nights
-2026-06-03,Yosemite Valley,Gas,58.20,Fill up before the park
-2026-06-04,Yosemite Valley,Food,45.10,Grocery run for trail snacks
-2026-06-05,Lake Tahoe,Lodging,145.00,Motel
-2026-06-05,Lake Tahoe,Activities,80.00,Kayak rental
-2026-06-06,Reno,Food,38.75,Diner breakfast
-2026-06-06,Reno,Gas,52.40,Fill up
-2026-06-08,Great Basin NP,Lodging,35.00,Campground fee
-2026-06-08,Great Basin NP,Activities,20.00,Cave tour tickets
-2026-06-10,Zion National Park,Lodging,410.00,Cabin x3 nights
-2026-06-10,Zion National Park,Gas,61.30,Fill up
-2026-06-11,Zion National Park,Food,120.00,Groceries and one restaurant meal
-2026-06-13,Bryce Canyon,Lodging,260.00,Lodge x2 nights
-2026-06-13,Bryce Canyon,Food,55.00,Lodge restaurant
-2026-06-15,Moab,Lodging,300.00,Airbnb x3 nights
-2026-06-15,Moab,Gas,49.90,Fill up
-2026-06-16,Moab,Activities,45.00,Arches entrance + gear rental
+Spending
+Auto-totaled below on the Budget tab
+Date,Category,Amount,Stop / Location,Payment Method,Notes
+2026-06-01,Fuel,52.40,Cincinnati,Credit Card,Fill up before leaving
+2026-06-02,Lodging,110.00,St. Louis,Credit Card,Motel near the Arch
+2026-06-02,Food,38.75,St. Louis,Cash,Diner breakfast
+2026-06-03,Fuel,61.20,Kansas City,Credit Card,Fill up
+2026-06-04,Lodging,0,Denver,,Stayed with a friend
+2026-06-04,Food,64.50,Denver,Credit Card,Dinner out
+2026-06-05,Park Passes,80.00,Denver,Credit Card,Red Rocks parking + tickets
+2026-06-06,Camping,0,Moab,,Free BLM dispersed camping
+2026-06-06,Fuel,58.90,Moab,Credit Card,Fill up
+2026-06-07,Gear,45.00,Moab,Credit Card,Extra water bottles and sunscreen
+2026-06-08,Lodging,410.00,Zion National Park,Credit Card,Cabin x3 nights
+2026-06-09,Park Passes,35.00,Zion National Park,Cash,America the Beautiful pass
+2026-06-10,Food,120.00,Zion National Park,Credit Card,Groceries and one restaurant meal
+,,,,,

@@ -10,8 +10,7 @@
   --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
 
   --visited: #2e7d32;
-  --current: #f9a825;
-  --upcoming: #1565c0;
+  --planned: #1565c0;
   --skipped: #9e9e9e;
 }
 
