@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photos</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="index.html">🧭 <span id="trip-name">Road Trip</span></a>
+    <nav class="main-nav">
+      <a class="nav-link" href="index.html">Map</a>
+      <a class="nav-link" href="itinerary.html">Itinerary</a>
+      <a class="nav-link" href="spending.html">Spending</a>
+      <a class="nav-link" href="gallery.html">Photos</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <h1>Photos</h1>
+  <p class="subtitle">Grouped by stop, straight from the Photos tab.</p>
+
+  <div id="gallery-container"></div>
+  <div class="empty-state" id="empty-state" hidden>No photos added yet.</div>
+</main>
+
+<footer class="site-footer">Built with a Google Sheet, a map library, and love. See README.md to make this yours.</footer>
+
+<script src="vendor/papaparse.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/gallery.js"></script>
+</body>
+</html>
