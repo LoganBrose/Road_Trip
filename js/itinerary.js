@@ -44,7 +44,7 @@
         App.el("div", {}, [
           App.el("h3", {}, [
             stop.name + (stop.state ? ", " + stop.state : ""),
-            App.el("span", { class: "status-badge", style: `background:${color}` }, [App.statusLabel(stop.status)])
+            App.el("span", { class: "status-badge", style: `background:${color};color:${App.statusTextColor(stop.status)}` }, [App.statusLabel(stop.status)])
           ]),
           App.el("div", { class: "stop-meta" }, [
             hasDate ? App.el("span", {}, ["📅 " + App.formatDate(stop.arrival_date)]) : null,

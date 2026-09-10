@@ -1,6 +1,6 @@
 /*
   map.js — powers the home page: the Leaflet map, the colored pins,
-  the line connecting visited stops, and the stats strip up top.
+  the line connecting visited (and current) stops, and the stats strip up top.
 */
 (function () {
   document.title = CONFIG.TRIP_NAME + " — Map";
@@ -8,9 +8,10 @@
   App.$("#trip-name-heading").textContent = CONFIG.TRIP_NAME;
 
   const map = L.map("map").setView([CONFIG.MAP_START_VIEW.lat, CONFIG.MAP_START_VIEW.lng], CONFIG.MAP_START_VIEW.zoom);
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 18,
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
+    maxZoom: 19,
+    subdomains: "abcd",
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
   }).addTo(map);
 
   App.loadStops().then(({ rows: stops, usedDemo }) => {
@@ -22,9 +23,10 @@
     const markers = [];
     valid.forEach((stop) => {
       const color = App.statusColor(stop.status);
+      const textColor = App.statusTextColor(stop.status);
       const marker = L.circleMarker([stop.latitude, stop.longitude], {
-        radius: 8,
-        color: "#fff",
+        radius: stop.status === "current" ? 11 : 8,
+        color: "#e7e9ee",
         weight: 2,
         fillColor: color,
         fillOpacity: 0.95
@@ -32,7 +34,7 @@
 
       marker.bindPopup(`
         <h3>${escapeHtml(stop.name)}${stop.state ? ", " + escapeHtml(stop.state) : ""}</h3>
-        <div><span class="status-badge" style="background:${color}">${App.statusLabel(stop.status)}</span></div>
+        <div><span class="status-badge" style="background:${color};color:${textColor}">${App.statusLabel(stop.status)}</span></div>
         ${stop.arrival_date ? `<div class="popup-row">📅 ${App.formatDate(stop.arrival_date)}${stop.nights != null ? " · " + stop.nights + " night" + (stop.nights === 1 ? "" : "s") : ""}</div>` : ""}
         ${stop.mileage != null ? `<div class="popup-row">🚗 ${stop.mileage.toLocaleString()} mi${stop.drive_hours != null ? " · " + stop.drive_hours + " hr" : ""}</div>` : ""}
         ${stop.accommodation ? `<div class="popup-row">🏠 ${escapeHtml(stop.accommodation)}</div>` : ""}
@@ -49,14 +51,14 @@
       map.fitBounds(group.getBounds().pad(0.15));
     }
 
-    // Line connecting visited stops, in date order
+    // Line connecting visited stops, through today's (current) stop, in date order
     const path = valid
-      .filter((s) => s.status === "visited")
+      .filter((s) => s.status === "visited" || s.status === "current")
       .sort((a, b) => App.parseDate(a.arrival_date) - App.parseDate(b.arrival_date))
       .map((s) => [s.latitude, s.longitude]);
 
     if (path.length > 1) {
-      L.polyline(path, { color: "#b5502e", weight: 3, opacity: 0.7, dashArray: "6 6" }).addTo(map);
+      L.polyline(path, { color: "#c9cdd6", weight: 3, opacity: 0.8, dashArray: "6 6" }).addTo(map);
     }
 
     renderStats(valid);
@@ -64,11 +66,13 @@
 
   function renderStats(stops) {
     const visited = stops.filter((s) => s.status === "visited");
+    const current = stops.filter((s) => s.status === "current");
     const planned = stops.filter((s) => s.status === "planned");
+    const soFar = visited.concat(current); // ground already covered, including today's stop
 
-    const nights = visited.reduce((sum, s) => sum + (s.nights || 0), 0);
-    const miles = visited.reduce((sum, s) => sum + (s.mileage || 0), 0);
-    const states = new Set(visited.map((s) => s.state).filter(Boolean));
+    const nights = soFar.reduce((sum, s) => sum + (s.nights || 0), 0);
+    const miles = soFar.reduce((sum, s) => sum + (s.mileage || 0), 0);
+    const states = new Set(soFar.map((s) => s.state).filter(Boolean));
 
     App.$("#stat-visited").textContent = visited.length;
     App.$("#stat-remaining").textContent = planned.length;

@@ -42,11 +42,15 @@
         labels: categories,
         datasets: [{
           data: categories.map((c) => byCategory[c]),
-          backgroundColor: categories.map((_, i) => CATEGORY_COLORS[i % CATEGORY_COLORS.length])
+          backgroundColor: categories.map((_, i) => CATEGORY_COLORS[i % CATEGORY_COLORS.length]),
+          borderColor: "#1a1e29",
+          borderWidth: 2
         }]
       },
       options: {
-        plugins: { legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 } } } }
+        plugins: {
+          legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 }, color: "#e7e9ee" } }
+        }
       }
     });
 
@@ -87,7 +91,7 @@
         App.el("td", {}, [r.category]),
         App.el("td", {}, [App.formatMoney(r.planned)]),
         App.el("td", {}, [App.formatMoney(r.actual)]),
-        App.el("td", { style: remaining < 0 ? "color:#b5502e;font-weight:600;" : "" }, [App.formatMoney(remaining)])
+        App.el("td", { style: remaining < 0 ? "color:#e0524d;font-weight:600;" : "" }, [App.formatMoney(remaining)])
       ]);
       tbody.appendChild(tr);
     });

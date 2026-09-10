@@ -118,9 +118,12 @@ just want to know what the site expects, here's the exact layout:
   western US). Easiest way to get these: search the place on Google Maps,
   right-click the pin, tap the coordinates that pop up (copies them).
 - **Arrival Date** — `YYYY-MM-DD` format.
-- **Status** — exactly one of `Planned`, `Visited`, or `Skipped`. This
-  controls the pin color on the map (see the legend on the home page) and
-  whether a stop counts toward the "visited" line/stats.
+- **Status** — one of `Planned` (red), `Current` (yellow — wherever you are
+  right now), `Visited` (green), or `Skipped` (grey). This controls the pin
+  color on the map (see the legend on the home page) and whether a stop
+  counts toward the route line/stats. If your sheet has a dropdown/data
+  validation rule on this column, add `Current` as an allowed value there
+  too, or typing it will get flagged as invalid input.
 - **Miles From Previous** — a number; the site labels it "mi" in the UI.
 - **Drive Hours** — usually a formula (`Miles / 60`) in the sheet. If a row
   comes through blank (the formula didn't calculate, or the cell is
@@ -252,10 +255,12 @@ Day to day, you'll only ever touch the **Google Sheet**, using the Google
 Sheets app (iOS/Android) or sheets.google.com in your phone's browser —
 never the code.
 
-- **Arrived somewhere new?** Add a row to the `Stops` tab (below row 3's
-  headers) and set `Status` to `Visited`.
+- **Heading to/at a stop right now?** Set its `Status` to `Current` — it
+  shows as a larger yellow pin and counts toward "so far" stats.
+- **Left a stop?** Change its `Status` from `Current` to `Visited` (green)
+  once you've moved on.
 - **Skipping a planned stop?** Set its `Status` to `Skipped` — it'll show
-  gray on the map instead of disappearing.
+  grey on the map instead of disappearing.
 - **Spent money?** Add a row to the `Spending` tab. The `Budget` tab's
   `Actual` column picks it up automatically (that's the sheet's own
   formula, not something the site does).
@@ -302,13 +307,19 @@ Drive link.
 A few things you might want to tweak, and where to find them:
 
 - **Status colors / pin colors** — `App.STATUS_COLORS` near the top of
-  `js/data.js`, and the matching CSS variables (`--visited`, `--planned`,
-  `--skipped`) in `css/style.css`.
+  `js/data.js`, and the matching CSS variables (`--visited`, `--current`,
+  `--planned`, `--skipped`) in `css/style.css`. Currently: visited=green,
+  current=yellow, planned=red, skipped=grey.
 - **Map's starting position/zoom** — `MAP_START_VIEW` in `js/config.js`.
   (The map auto-zooms to fit your pins anyway, so this is just what shows
   for a split second before that happens.)
-- **Overall look** (colors, fonts, spacing) — CSS variables at the top of
-  `css/style.css`, under `:root`.
+- **The dark map tiles** — `js/map.js`, the `L.tileLayer(...)` call. It
+  currently uses CARTO's free "Dark Matter" tiles; swapping in a different
+  free tile provider just means changing that one URL and attribution line.
+- **Overall look** (dark theme colors, fonts, spacing) — CSS variables at
+  the top of `css/style.css`, under `:root`. `--bg`/`--bg-deep` are the
+  near-black/dark-navy backgrounds, `--surface` is the card color, `--accent`
+  is the navy-blue used for links/buttons/active nav.
 - **Site title** — `TRIP_NAME` in `js/config.js`.
 - **Adding a new status** — add it to `STATUS_COLORS` in `js/data.js`, its
   matching rule in `App.normalizeStatus`, and a legend entry in `index.html`.

@@ -16,15 +16,22 @@ const App = {};
 const HEADER_ROW_INDEX = 2; // 0-based: row 3
 
 App.STATUS_COLORS = {
-  visited: "#2e7d32",  // green
-  planned: "#1565c0",  // blue
-  skipped: "#9e9e9e"   // gray
+  visited: "#3fae5a",  // green
+  current: "#f2c94c",  // yellow
+  planned: "#e0524d",  // red
+  skipped: "#7d8494"   // muted grey
 };
+
+// All four status colors are mid-tone enough that dark text reads better
+// on them than white does (checked contrast on each) — so badges/pins
+// always get dark text rather than switching per status.
+const STATUS_BADGE_TEXT = "#14161a";
 
 App.normalizeStatus = function (raw) {
   const s = String(raw || "").trim().toLowerCase();
   if (App.STATUS_COLORS[s]) return s;
   if (s.startsWith("visit")) return "visited";
+  if (s.startsWith("curr") || s.startsWith("now")) return "current";
   if (s.startsWith("skip") || s.startsWith("cancel")) return "skipped";
   if (s.startsWith("plan")) return "planned";
   return "planned";
@@ -32,6 +39,10 @@ App.normalizeStatus = function (raw) {
 
 App.statusColor = function (raw) {
   return App.STATUS_COLORS[App.normalizeStatus(raw)];
+};
+
+App.statusTextColor = function () {
+  return STATUS_BADGE_TEXT;
 };
 
 App.statusLabel = function (raw) {
