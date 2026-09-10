@@ -136,8 +136,8 @@ h2 { font-size: 1.15rem; margin: 28px 0 12px; }
 #map {
   flex: 1 1 500px;
   min-width: 0;
-  height: 62vh;
-  min-height: 360px;
+  height: 74vh;
+  min-height: 440px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--bg-deep);
