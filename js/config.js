@@ -2,9 +2,13 @@
   CONFIG — connects the site to your real Google Sheet.
 
   Each tab is read from two possible URLs (the site tries the first, and
-  falls back to the second if that one doesn't work): the "gviz" endpoint,
-  which is Google's format specifically meant to be read by other websites,
-  and the "pub" (publish to web) endpoint as a backup.
+  falls back to the second if that one doesn't work): the "pub" (publish
+  to web) endpoint, which exports cells literally as typed, and the "gviz"
+  endpoint as a backup. gviz tries to infer each column's data type and,
+  for a column it infers as "number," will export a text header sitting in
+  that column as blank — which is exactly what was happening to Latitude/
+  Longitude/Nights/Miles/Drive Hours/Amount/Planned/Actual/Remaining. "pub"
+  doesn't do that kind of inference, so it's tried first now.
 
   Both need the tab's "gid" (the number that identifies a tab — visible in
   the address bar when that tab is open in Google Sheets). See README.md
@@ -15,8 +19,8 @@ const SHEET_PUBLISH_ID = "2PACX-1vQqvcJs71KvJB69qL7LdRgH8eVY6fjn398AUqWAggEuWffb
 
 function sheetCsvUrls(gid) {
   return [
-    `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}`,
-    `https://docs.google.com/spreadsheets/d/e/${SHEET_PUBLISH_ID}/pub?gid=${gid}&single=true&output=csv`
+    `https://docs.google.com/spreadsheets/d/e/${SHEET_PUBLISH_ID}/pub?gid=${gid}&single=true&output=csv`,
+    `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}`
   ];
 }
 

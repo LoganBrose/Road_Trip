@@ -179,23 +179,42 @@ individual tab is then addressed by its **gid** — a number that identifies
 which tab it is (visible in the sheet's normal edit URL, e.g.
 `.../edit?gid=725734293#gid=725734293`).
 
-`js/config.js` builds each tab's CSV URL from that shared ID plus the tab's
-gid:
+`js/config.js` builds **two** candidate URLs per tab, and the site tries
+them in order, falling back to the second if the first doesn't work:
 
 ```js
-const SHEET_PUBLISH_ID = "2PACX-1vQqv...";
+const SPREADSHEET_ID = "1YYjggCBd...";       // the long ID from the normal edit URL
+const SHEET_PUBLISH_ID = "2PACX-1vQqv...";   // from Publish to web
 
-function sheetCsvUrl(gid) {
-  return `https://docs.google.com/spreadsheets/d/e/${SHEET_PUBLISH_ID}/pub?gid=${gid}&single=true&output=csv`;
+function sheetCsvUrls(gid) {
+  return [
+    `https://docs.google.com/spreadsheets/d/e/${SHEET_PUBLISH_ID}/pub?gid=${gid}&single=true&output=csv`,
+    `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&gid=${gid}`
+  ];
 }
 
 const CONFIG = {
-  STOPS_CSV_URL: sheetCsvUrl(725734293),
-  SPENDING_CSV_URL: sheetCsvUrl(697444775),
-  BUDGET_CSV_URL: sheetCsvUrl(463352620),
-  PHOTOS_CSV_URL: sheetCsvUrl(1978429405),
+  STOPS_CSV_URL: sheetCsvUrls(725734293),
+  SPENDING_CSV_URL: sheetCsvUrls(697444775),
+  BUDGET_CSV_URL: sheetCsvUrls(463352620),
+  PHOTOS_CSV_URL: sheetCsvUrls(1978429405),
   ...
 ```
+
+**Why two URLs, and why that order specifically:** the "pub" (publish to
+web) link exports each cell literally, as typed. The "gviz" link is an
+alternate Google export format that tries to infer each column's data
+type — and for a column it infers as "number" (like Latitude, Amount,
+Planned), it exports a *text* header sitting in that column as **blank**
+instead of its real text. That silently broke every numeric column across
+every tab the first time this site used gviz as the primary source. `pub`
+doesn't do this, so it's tried first; `gviz` is kept only as a fallback
+for the unlikely case `pub` stops working. If numbers ever go missing
+again (map pins vanish, totals show $0, nights/miles disappear) while text
+fields still work, this is the first thing to suspect — check the
+`Data check: ...` diagnostic line under the Map and Spending pages, which
+shows the actual column headers the site read; blank entries there mean
+whichever endpoint answered first is doing this again.
 
 Editing the sheet's *contents* never requires touching this file or
 redeploying anything — the site re-fetches the CSVs fresh every time
@@ -354,6 +373,18 @@ Spending/Photos, row 3 data rows on Budget) and that the key column isn't
 blank — Stop Name for Stops/Photos, Date for Spending, Category for Budget.
 Blank-key rows are filtered out on purpose (so leftover example rows don't
 show up), which means a genuinely new row needs that column filled in too.
+
+**Pins/totals/nights/miles are missing, but names/dates/status still show
+up fine.**
+This is the numeric-column-header bug described in
+[section 4](#4-how-the-site-is-connected-to-the-sheet) — the `gviz`
+endpoint answered instead of `pub` and blanked out a numeric column's
+header. Check the small `Data check: ...` line under the Map page (and the
+similar one under Spending) — it lists the exact headers the site read; any
+blank entries confirm this. Usually this resolves itself (the site retries
+`pub` first on every page load), but if it persists, `pub` may have
+stopped working entirely — re-check that the sheet is still published
+(same fix as the first item in this list).
 
 **A photo won't load (broken image icon).**
 Usually the Drive file's sharing isn't set to "Anyone with the link," or it
