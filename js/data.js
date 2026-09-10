@@ -87,7 +87,7 @@ App.loadSheetTab = function (csvUrlOrUrls, demoPath, headerRowIndex) {
   const candidates = App.realUrls(csvUrlOrUrls);
   const parseText = (text) => Papa.parse(text, { skipEmptyLines: false }).data;
 
-  const fetchDemo = () => fetch(demoPath).then((r) => r.text()).then((text) => ({
+  const fetchDemo = () => fetch(demoPath + "?cachebust=" + Date.now()).then((r) => r.text()).then((text) => ({
     table: parseText(text), usedDemo: true, fetchFailed: candidates.length > 0
   }));
 
