@@ -1,7 +1,7 @@
 # Road Trip Tracker
 
-A little website that tracks a six-week road trip across the western US: an
-interactive map, a day-by-day itinerary, a spending summary, and a photo
+A little website that tracks a road trip across the country: an interactive
+map, a day-by-day itinerary, a spending & budget summary, and a photo
 gallery. You update everything from your phone by editing a Google Sheet —
 the website reads that sheet live, so there's nothing to "publish" or
 redeploy after the initial setup.
@@ -11,9 +11,14 @@ and it's meant to still make sense if you come back to this project in a
 year and have forgotten everything. Read it top to bottom once, then keep
 it around as a reference.
 
-**Live site:** once you've done the "Host it for free" step below, your
-site will be at `https://loganbrose.github.io/Road_Trip/` (exact URL is
-also shown on the GitHub Pages settings page — see below).
+**Live site:** once GitHub Pages is enabled for this repo (see section 6),
+your site is at `https://loganbrose.github.io/Road_Trip/` (exact URL is
+also shown on the GitHub Pages settings page).
+
+**Current status:** the site is already connected to a real Google Sheet
+(see `js/config.js`) — you don't need to do the sheet-connection steps
+below unless you're reconnecting it, understanding how it works, or setting
+this up again from scratch a year from now.
 
 ---
 
@@ -21,9 +26,9 @@ also shown on the GitHub Pages settings page — see below).
 
 1. [How this works, in plain language](#1-how-this-works-in-plain-language)
 2. [What's in this repository](#2-whats-in-this-repository)
-3. [Create your Google Sheet](#3-create-your-google-sheet)
-4. [Publish the sheet so the site can read it](#4-publish-the-sheet-so-the-site-can-read-it)
-5. [Connect the site to your sheet](#5-connect-the-site-to-your-sheet)
+3. [Your Google Sheet's structure](#3-your-google-sheets-structure)
+4. [How the site is connected to the sheet](#4-how-the-site-is-connected-to-the-sheet)
+5. [Reconnecting or adding a tab (getting a new gid)](#5-reconnecting-or-adding-a-tab-getting-a-new-gid)
 6. [Host it for free (GitHub Pages)](#6-host-it-for-free-github-pages)
 7. [Updating the trip from your phone](#7-updating-the-trip-from-your-phone)
 8. [Adding photos](#8-adding-photos)
@@ -38,8 +43,10 @@ also shown on the GitHub Pages settings page — see below).
 
 There is no "backend," no database, and no app to install. It's three things:
 
-- **Your Google Sheet** — three tabs (Stops, Spending, Photos) that you edit
-  from the Google Sheets app on your phone, same as any spreadsheet.
+- **Your Google Sheet** — the tabs you edit from the Google Sheets app on
+  your phone, same as any spreadsheet: `Stops`, `Spending`, `Budget`, and
+  `Photos` feed the site. (You likely also have `Candidates` and `Gear`
+  tabs for your own planning — the site ignores those on purpose.)
 - **This website** — a handful of plain HTML/CSS/JavaScript files. It has no
   build step; nothing gets "compiled." A browser can open these files directly.
 - **GitHub Pages** — a free service that takes the files in this repository
@@ -64,7 +71,7 @@ servers and draws the map/itinerary/spending/photos from it. That means:
 Road_Trip/
 ├── index.html          Home page: the map, pin legend, trip stats
 ├── itinerary.html       Chronological list of every stop
-├── spending.html         Spending totals, category chart, transaction table
+├── spending.html         Spending totals, category chart, budget table, transactions
 ├── gallery.html          Photo gallery, grouped by stop
 ├── css/
 │   └── style.css        All the site's styling (one file, used by every page)
@@ -76,7 +83,7 @@ Road_Trip/
 │   ├── spending.js       Logic just for spending.html
 │   └── gallery.js        Logic just for gallery.html
 ├── data/
-│   └── demo-*.csv        Sample data so the site works before you connect a sheet
+│   └── demo-*.csv        Sample data so the site works before/without a sheet
 └── vendor/               Copies of the 3rd-party code libraries the site uses
     ├── leaflet/           Draws the interactive map
     ├── papaparse.min.js   Reads the CSV data from your sheet
@@ -88,135 +95,132 @@ That's deliberate: it means the site keeps working even if some CDN goes
 down or changes its URLs years from now, and it's one less thing to
 understand. You never need to touch this folder.
 
-**Right now, with no setup, the site already works** — it shows demo data
-from `data/*.csv` with a banner across the top saying so. That's on purpose,
-so you can see it running before doing anything else. Sections 3–6 below
-walk through replacing that demo data with your real trip.
+If `js/config.js` ever points at demo data (or a sheet fails to load), the
+site falls back to the sample CSVs in `data/` and shows a banner saying so
+— it never just shows a blank page.
 
 ---
 
-## 3. Create your Google Sheet
+## 3. Your Google Sheet's structure
 
-1. Go to [sheets.google.com](https://sheets.google.com) and create a new,
-   blank spreadsheet. Name it something like "Road Trip Data."
-2. By default it has one tab called "Sheet1." You need **three tabs**,
-   named and structured exactly like this (right-click a tab at the bottom
-   to rename or add one):
+The real sheet isn't a simple "row 1 = headers" spreadsheet — each tab has
+a title row and a summary row above the actual column headers. The site
+knows to skip those two rows and start reading from row 3 (or row 4/5 on
+the planning-only tabs). If you're recreating this sheet from scratch, or
+just want to know what the site expects, here's the exact layout:
 
-### Tab 1: `Stops`
+### `Stops` — headers on row 3, data starts row 4
 
-Row 1 must have these exact column headers (lowercase, no spaces — copy them
-exactly):
+| Stop Name | State | Latitude | Longitude | Arrival Date | Nights | Status | Miles From Previous | Drive Hours | Accommodation | Main Activity | Rating (1-5) | Weather | Notes |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
-| name | state | latitude | longitude | arrival_date | nights | status | mileage | accommodation | activity | rating | weather | notes |
-|---|---|---|---|---|---|---|---|---|---|---|---|---|
+- **Latitude / Longitude** — decimal degrees (longitude negative for the
+  western US). Easiest way to get these: search the place on Google Maps,
+  right-click the pin, tap the coordinates that pop up (copies them).
+- **Arrival Date** — `YYYY-MM-DD` format.
+- **Status** — exactly one of `Planned`, `Visited`, or `Skipped`. This
+  controls the pin color on the map (see the legend on the home page) and
+  whether a stop counts toward the "visited" line/stats.
+- **Miles From Previous** — a number; the site labels it "mi" in the UI.
+- **Drive Hours** — usually a formula (`Miles / 60`) in the sheet. If a row
+  comes through blank (the formula didn't calculate, or the cell is
+  genuinely empty), the site computes it itself the same way — you don't
+  need to fix blank Drive Hours cells.
+- Any row with a blank **Stop Name** is skipped automatically — safe to
+  leave example rows or extra blank rows in the sheet.
 
-- **name** — e.g. `Zion National Park`
-- **state** — two-letter code, e.g. `UT`
-- **latitude** / **longitude** — decimal numbers, e.g. `37.2982` and
-  `-113.0263`. Easiest way to get these: search the place on Google Maps,
-  right-click the pin, click the coordinates that pop up (it copies them),
-  then paste the first number into latitude and the second into longitude.
-- **arrival_date** — e.g. `2026-06-10` (year-month-day is safest; avoid
-  just typing `6/10` since Sheets can guess the wrong year)
-- **nights** — a number, e.g. `2`
-- **status** — one of `Visited`, `Current`, `Upcoming`, or `Skipped`
-  (controls the pin color — see the legend on the home page)
-- **mileage** — miles driven to reach this stop, a number
-- **accommodation** — free text, e.g. `Cabin near park entrance`
-- **activity** — free text, e.g. `Angels Landing hike`
-- **rating** — a number 1–5 (shown as stars); leave blank until you've been
-- **weather** — free text, e.g. `Hot 92F`; leave blank until you've been
-- **notes** — anything else, free text
+### `Spending` — headers on row 3, data starts row 4
 
-Add one row per stop, in any order — the site sorts them by `arrival_date`
-automatically. Leave `rating`, `weather`, and `notes` blank for stops you
-haven't reached yet.
+| Date | Category | Amount | Stop / Location | Payment Method | Notes |
+|---|---|---|---|---|---|
 
-### Tab 2: `Spending`
+- **Category** — one of `Fuel`, `Lodging`, `Camping`, `Food`, `Park Passes`,
+  `Permits`, `Gear`, `Vehicle / Repairs`, `Other` (or whatever you use —
+  the category chart builds itself from whatever values appear).
+- Rows with a blank **Date** are skipped automatically.
 
-Row 1 headers:
+### `Budget` — headers on row 3
 
-| date | stop | category | amount | notes |
+| Category | Planned | Actual | Remaining | Notes |
 |---|---|---|---|---|
 
-- **date** — e.g. `2026-06-10`
-- **stop** — should match a `name` from the Stops tab (not required, but
-  keeps things tidy)
-- **category** — e.g. `Lodging`, `Food`, `Gas`, `Activities`. Use whatever
-  categories make sense to you — the spending page automatically builds its
-  chart from whatever categories appear.
-- **amount** — a plain number, e.g. `64.50` (no dollar sign)
-- **notes** — free text
+`Actual` is calculated inside the sheet from the `Spending` tab — the site
+displays that value as-is and never recalculates it independently. The
+Spending page's budget table and progress bar are built entirely from this
+tab (total Planned vs. total Actual across all categories).
 
-Add one row per purchase, or per day if you'd rather log totals than every
-receipt.
+### `Photos` — headers on row 3, data starts row 4
 
-### Tab 3: `Photos`
-
-Row 1 headers:
-
-| stop | date | photo_url | caption |
+| Stop Name | Date | Image URL | Caption |
 |---|---|---|---|
 
-- **stop** — should match a `name` from the Stops tab, so the gallery can
-  group photos correctly
-- **date** — e.g. `2026-06-10`
-- **photo_url** — a link to the photo (see [section 8](#8-adding-photos) for
-  exactly how to get this from your phone)
-- **caption** — free text
+**Stop Name** must match a Stop Name on the `Stops` tab so the gallery can
+group photos correctly. Rows with a blank Stop Name or Image URL are
+skipped automatically. See [section 8](#8-adding-photos) for how to get an
+Image URL from your phone.
+
+### `Candidates` and `Gear` — not used by the site
+
+These are planning tabs (places you're still deciding on, and gear
+shopping list) — the public site deliberately doesn't read them. If you
+ever want a "planning" page added for Candidates, that's a bigger change;
+ask for it specifically rather than expecting it to just appear.
 
 ---
 
-## 4. Publish the sheet so the site can read it
+## 4. How the site is connected to the sheet
 
-The website can't read a private Google Sheet directly — you have to
-"publish" it, which creates a public, read-only, auto-updating link for
-each tab. This does **not** make the sheet editable by strangers, and you
-can un-publish at any time. It does mean anyone with the link can view that
-data, which is the tradeoff for this being free and having no backend.
+The whole sheet was published at once (**File → Share → Publish to web →
+Entire Document**), which gives every tab a shared "publish ID." Each
+individual tab is then addressed by its **gid** — a number that identifies
+which tab it is (visible in the sheet's normal edit URL, e.g.
+`.../edit?gid=725734293#gid=725734293`).
 
-Do this once per tab (three times total):
-
-1. Open your sheet. **File → Share → Publish to web.**
-2. In the dialog, there are two dropdowns. Set the **first one** to the
-   specific tab (e.g. "Stops") — not "Entire Document."
-3. Set the **second dropdown** to **"Comma-separated values (.csv)."**
-4. Click **Publish**, confirm if asked.
-5. Copy the link it gives you. It looks like:
-   `https://docs.google.com/spreadsheets/d/e/2PACX-.../pub?gid=0&single=true&output=csv`
-6. Repeat for the Spending tab and the Photos tab (selecting each in the
-   first dropdown, CSV in the second).
-
-You should end up with three different URLs. Save them somewhere (a Notes
-app, or paste them right into `config.js` as described next).
-
----
-
-## 5. Connect the site to your sheet
-
-Open `js/config.js` in this repository (click it on GitHub, then the pencil
-"edit" icon) and replace the three placeholder strings with the three URLs
-from the previous step:
+`js/config.js` builds each tab's CSV URL from that shared ID plus the tab's
+gid:
 
 ```js
+const SHEET_PUBLISH_ID = "2PACX-1vQqv...";
+
+function sheetCsvUrl(gid) {
+  return `https://docs.google.com/spreadsheets/d/e/${SHEET_PUBLISH_ID}/pub?gid=${gid}&single=true&output=csv`;
+}
+
 const CONFIG = {
-  STOPS_CSV_URL: "https://docs.google.com/spreadsheets/d/e/.../pub?output=csv",
-  SPENDING_CSV_URL: "https://docs.google.com/spreadsheets/d/e/.../pub?output=csv",
-  PHOTOS_CSV_URL: "https://docs.google.com/spreadsheets/d/e/.../pub?output=csv",
+  STOPS_CSV_URL: sheetCsvUrl(725734293),
+  SPENDING_CSV_URL: sheetCsvUrl(697444775),
+  BUDGET_CSV_URL: sheetCsvUrl(463352620),
+  PHOTOS_CSV_URL: sheetCsvUrl(1978429405),
   ...
 ```
 
-Commit the change (GitHub's web editor will prompt you for a commit
-message — anything like "Connect my Google Sheet" is fine). Once GitHub
-Pages redeploys (usually under a minute), the demo-data banner disappears
-and your real trip shows up.
+Editing the sheet's *contents* never requires touching this file or
+redeploying anything — the site re-fetches the CSVs fresh every time
+someone loads a page. You only need to change `config.js` if a tab's gid
+changes (see next section) or you want to point the site at a different
+sheet entirely.
 
-You can also set two optional things in this same file:
+---
 
-- `TRIP_BUDGET` — a number, e.g. `6000`. Adds a budget progress bar to the
-  Spending page. Leave as `null` to hide it.
-- `TRIP_NAME` — the title shown at the top of every page.
+## 5. Reconnecting or adding a tab (getting a new gid)
+
+You won't need this often — a tab's gid doesn't change just from editing
+rows. You'd only need to redo this if you rename/recreate a tab, unpublish
+and republish the whole sheet, or want to point the site at a totally
+different spreadsheet.
+
+1. Open the sheet, tap the tab you need (e.g. `Stops`).
+2. Look at the URL — it ends in something like `#gid=725734293`. That
+   number is the gid.
+3. If it's a brand-new spreadsheet (different publish ID, not just a new
+   tab on the same one), you also need to re-publish the whole thing:
+   **File → Share → Publish to web → Entire Document → Publish**, then
+   copy the long ID out of the link it gives you (the part after `/d/e/`
+   and before `/pubhtml` or `/pub`).
+4. Update `js/config.js` — either the `SHEET_PUBLISH_ID` constant (if the
+   whole sheet changed) or the specific gid passed to `sheetCsvUrl(...)`
+   for that tab.
+5. Commit and push the change. GitHub Pages redeploys automatically.
 
 ---
 
@@ -227,17 +231,18 @@ Pages turns this repository into a live website for free.
 
 1. On GitHub, go to this repository's **Settings** tab.
 2. In the left sidebar, click **Pages**.
-3. Under "Build and deployment" → "Source," choose **Deploy from a branch**.
+3. Under "Build and deployment," make sure **Source** is set to **"Deploy
+   from a branch"** (if it says "GitHub Actions" instead, change it — this
+   is the step that's easy to miss).
 4. Under "Branch," choose `main` (or whichever branch has these files) and
    folder `/ (root)`. Click **Save**.
 5. Wait a minute or two, then refresh the page — GitHub shows the live URL
    at the top, something like `https://loganbrose.github.io/Road_Trip/`.
 
 That URL is what you share with family. Every time you push a change to
-this repository (like editing `config.js`), GitHub Pages automatically
-redeploys it — you don't need to do anything else. Editing the Google
-Sheet itself doesn't require a redeploy at all, since the site fetches the
-sheet live.
+this repository, GitHub Pages automatically redeploys it — you don't need
+to do anything else. Editing the Google Sheet itself doesn't require a
+redeploy at all, since the site fetches the sheet live.
 
 ---
 
@@ -247,10 +252,13 @@ Day to day, you'll only ever touch the **Google Sheet**, using the Google
 Sheets app (iOS/Android) or sheets.google.com in your phone's browser —
 never the code.
 
-- **Arrived somewhere new?** Add a row to the Stops tab. Set that row's
-  `status` to `Current`, and change your *previous* stop's `status` to
-  `Visited`.
-- **Spent money?** Add a row to the Spending tab.
+- **Arrived somewhere new?** Add a row to the `Stops` tab (below row 3's
+  headers) and set `Status` to `Visited`.
+- **Skipping a planned stop?** Set its `Status` to `Skipped` — it'll show
+  gray on the map instead of disappearing.
+- **Spent money?** Add a row to the `Spending` tab. The `Budget` tab's
+  `Actual` column picks it up automatically (that's the sheet's own
+  formula, not something the site does).
 - **Took a great photo?** See [section 8](#8-adding-photos).
 
 **One quirk to know:** Google's "publish to web" data is cached and can
@@ -272,8 +280,9 @@ itself. The simplest option that works entirely from your phone:
 2. In Drive, tap the photo, then **Share → General access → change to
    "Anyone with the link."** (It only needs to be viewable, not editable.)
 3. Tap **Copy link**.
-4. Paste that link into the `photo_url` column in the Photos tab, along
-   with the `stop` name, `date`, and an optional `caption`.
+4. Paste that link into the **Image URL** column in the `Photos` tab, along
+   with the **Stop Name** (must match the Stops tab), **Date**, and an
+   optional **Caption**.
 
 The site automatically converts a normal Drive share link into a viewable
 image behind the scenes (see `driveImageUrl` in `js/data.js` if you're
@@ -283,7 +292,7 @@ curious how). No need to reformat the link yourself.
 serves shared files, or a link's sharing gets reset to private), the
 fallback is any other image host that gives you a direct link ending in
 something like `.jpg` — Imgur is a common free option. Paste that link into
-`photo_url` instead; the site displays it as-is if it doesn't look like a
+Image URL instead; the site displays it as-is if it doesn't look like a
 Drive link.
 
 ---
@@ -293,32 +302,38 @@ Drive link.
 A few things you might want to tweak, and where to find them:
 
 - **Status colors / pin colors** — `App.STATUS_COLORS` near the top of
-  `js/data.js`.
+  `js/data.js`, and the matching CSS variables (`--visited`, `--planned`,
+  `--skipped`) in `css/style.css`.
 - **Map's starting position/zoom** — `MAP_START_VIEW` in `js/config.js`.
   (The map auto-zooms to fit your pins anyway, so this is just what shows
   for a split second before that happens.)
 - **Overall look** (colors, fonts, spacing) — CSS variables at the top of
   `css/style.css`, under `:root`.
 - **Site title** — `TRIP_NAME` in `js/config.js`.
-- **Adding a new status** (e.g. "Cancelled") — add it to `STATUS_COLORS` in
-  `js/data.js` and to `App.normalizeStatus`'s matching rules.
+- **Adding a new status** — add it to `STATUS_COLORS` in `js/data.js`, its
+  matching rule in `App.normalizeStatus`, and a legend entry in `index.html`.
 
 ---
 
 ## 10. Troubleshooting
 
 **The map/itinerary/spending/gallery is blank, or shows the demo banner
-even after I connected my sheet.**
-Double-check each URL in `config.js` — it must end in `output=csv`, and
-each one must point at the correct tab (re-publishing sometimes resets the
-tab dropdown to "Entire Document" by accident, which won't work). Also
-confirm the tab was published as CSV, not just "shared" with a person —
-publishing and sharing are different things in Google Sheets.
+even though the sheet is connected.**
+Double-check `js/config.js` — each gid must match the tab it's meant to
+(open the tab in the sheet and compare the URL's gid). Also confirm the
+whole sheet is still published: **File → Share → Publish to web** — it's
+possible publishing got turned off, or a "stop publishing" click reset it.
 
 **The site shows old data after I edited the sheet.**
 Wait ~5 minutes (Google's publish cache) and do a hard refresh. If it's
-been much longer than that, re-check File → Share → Publish to web — it's
-possible publishing got turned off.
+been much longer than that, re-check that the sheet is still published.
+
+**A row I added isn't showing up.**
+Check it landed *below* the header row for that tab (row 4 on Stops/
+Spending/Photos, row 3 data rows on Budget) and that the key column isn't
+blank — Stop Name for Stops/Photos, Date for Spending, Category for Budget.
+Blank-key rows are filtered out on purpose (so leftover example rows don't
+show up), which means a genuinely new row needs that column filled in too.
 
 **A photo won't load (broken image icon).**
 Usually the Drive file's sharing isn't set to "Anyone with the link," or it
@@ -326,9 +341,15 @@ got reset. Reopen it in Drive and check. See [section 8](#8-adding-photos)
 for the Imgur fallback.
 
 **A pin is in the wrong place, or missing.**
-Check that `latitude`/`longitude` in the Stops tab are plain decimal
-numbers (not something like `37°17'53"N`), and that `latitude` isn't
-accidentally swapped with `longitude`.
+Check that Latitude/Longitude in the Stops tab are plain decimal numbers
+(not something like `37°17'53"N`), and that Latitude isn't accidentally
+swapped with Longitude (longitude should be negative for anywhere in the US).
+
+**Drive Hours or Miles look off.**
+Miles From Previous is whatever you typed in. Drive Hours either comes from
+the sheet's own formula or, if that cell is blank, gets computed by the
+site as Miles ÷ 60 — so a blank-looking Drive Hours cell in the sheet is
+normal and not a bug.
 
 **I broke something in the code and want to undo it.**
 Every change is saved in GitHub's history. Go to this repository's
@@ -362,6 +383,8 @@ A few terms used above, if any of this is new:
   tracked by Git/GitHub so changes are saved with history.
 - **CSV** — "comma-separated values," a plain-text way of representing a
   spreadsheet. Google Sheets can export any tab as one.
+- **gid** — the number Google Sheets uses to identify one tab within a
+  spreadsheet. Visible in the URL whenever that tab is open.
 - **CDN / vendored library** — code someone else wrote (like the map
   library) that this site uses. "Vendored" means a copy of it lives in this
   repo's `vendor/` folder instead of being fetched from the internet each

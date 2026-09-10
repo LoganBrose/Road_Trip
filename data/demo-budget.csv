@@ -1,0 +1,12 @@
+Budget
+Actual is calculated automatically from the Spending tab
+Category,Planned,Actual,Remaining,Notes
+Fuel,900,172.50,727.50,Based on ~4500 miles at current gas prices
+Lodging,2200,520.00,1680.00,Mix of hotels and a few free nights
+Camping,150,0,150.00,Mostly free BLM/dispersed sites
+Food,1400,223.25,1176.75,
+Park Passes,120,115.00,5.00,America the Beautiful annual pass covers most parks
+Permits,60,0,60.00,Backcountry permits not yet booked
+Gear,300,45.00,255.00,
+Vehicle / Repairs,400,0,400.00,Contingency fund
+Other,250,0,250.00,Buffer for anything unplanned

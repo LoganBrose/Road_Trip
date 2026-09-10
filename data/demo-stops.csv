@@ -1,19 +1,16 @@
-name,state,latitude,longitude,arrival_date,nights,status,mileage,accommodation,activity,rating,weather,notes
-San Francisco,CA,37.7749,-122.4194,2026-06-01,2,Visited,0,Friend's apartment,Golden Gate Bridge walk,5,Sunny 68F,Great way to kick off the trip
-Yosemite Valley,CA,37.8651,-119.5383,2026-06-03,2,Visited,190,Curry Village tent cabin,Half Dome hike,5,Clear 75F,Book campsites months ahead
-Lake Tahoe,CA,39.0968,-120.0324,2026-06-05,1,Visited,140,Lakeside motel,Kayaking,4,Sunny 72F,Water was freezing but worth it
-Reno,NV,39.5296,-119.8138,2026-06-06,1,Visited,40,Casino hotel,Downtown walk,3,Hot 88F,Just a pit stop
-Great Basin NP,NV,39.0058,-114.2158,2026-06-08,1,Visited,300,Campground,Lehman Caves tour,4,Warm 80F,Incredible dark skies
-Zion National Park,UT,37.2982,-113.0263,2026-06-10,3,Visited,220,Cabin near park entrance,Angels Landing,5,Hot 92F,Start hikes early to beat heat
-Bryce Canyon,UT,37.5930,-112.1871,2026-06-13,2,Visited,90,Lodge,Sunrise Point photography,5,Cool 65F,Bring a jacket for sunrise
-Moab,UT,38.5733,-109.5498,2026-06-15,3,Current,150,Airbnb,Arches National Park,,Sunny 85F,In progress
-Grand Canyon South Rim,AZ,36.0544,-112.1401,2026-06-18,2,Upcoming,230,Lodge,Rim trail hike,,,
-Sedona,AZ,34.8697,-111.7610,2026-06-20,2,Upcoming,120,Boutique hotel,Red rock jeep tour,,,
-Mesa Verde,CO,37.1836,-108.4897,2026-06-22,2,Upcoming,250,Campground,Cliff dwelling tour,,,
-Rocky Mountain NP,CO,40.3428,-105.6836,2026-06-25,3,Upcoming,300,Cabin,Trail Ridge Road drive,,,
-Grand Teton NP,WY,43.7904,-110.6818,2026-06-28,2,Upcoming,270,Campground,Jenny Lake hike,,,
-Yellowstone NP,WY,44.4280,-110.5885,2026-06-30,3,Upcoming,60,Lodge,Old Faithful and geysers,,,
-Glacier National Park,MT,48.6960,-113.7186,2026-07-04,3,Upcoming,400,Cabin,Going-to-the-Sun Road,,,
-Seattle,WA,47.6062,-122.3321,2026-07-08,3,Upcoming,470,Downtown hotel,Pike Place Market,,,
-Portland,OR,45.5152,-122.6784,2026-07-11,2,Upcoming,175,Friend's house,Food cart tour,,,
-Crater Lake NP,OR,42.9446,-122.1090,2026-07-13,2,Upcoming,240,Lodge,Rim drive,,,
+Stops
+18 stops planned · Cincinnati OH to Seattle WA
+Stop Name,State,Latitude,Longitude,Arrival Date,Nights,Status,Miles From Previous,Drive Hours,Accommodation,Main Activity,Rating (1-5),Weather,Notes
+Cincinnati,OH,39.1031,-84.5120,2026-06-01,0,Visited,0,0,Home,Trip departure,5,Clear 72F,Trip start
+St. Louis,MO,38.6270,-90.1994,2026-06-02,1,Visited,350,5.8,Motel near the Arch,Gateway Arch,4,Sunny 81F,Quick overnight stop
+Kansas City,MO,39.0997,-94.5786,2026-06-03,0,Skipped,250,,,,,,Ran short on time; drove straight through
+Denver,CO,39.7392,-104.9903,2026-06-04,2,Visited,600,9.5,Friend's apartment,Red Rocks Amphitheatre,5,Warm 78F,Altitude hit harder than expected
+Moab,UT,38.5733,-109.5498,2026-06-06,2,Visited,240,4,Airbnb,Arches National Park,5,Hot 95F,Delicate Arch at sunset was worth the heat
+Zion National Park,UT,37.2982,-113.0263,2026-06-08,3,Visited,150,2.8,Cabin near park entrance,Angels Landing hike,5,Hot 92F,Start hikes early to beat the heat
+Grand Canyon South Rim,AZ,36.0544,-112.1401,2026-06-11,2,Planned,230,4.1,Lodge,Rim trail hike,,,
+Las Vegas,NV,36.1699,-115.1398,2026-06-13,1,Planned,280,4.6,Hotel on the Strip,One night detour,,,
+Yosemite Valley,CA,37.8651,-119.5383,2026-06-14,2,Planned,400,6.7,Curry Village tent cabin,Half Dome hike,,,
+San Francisco,CA,37.7749,-122.4194,2026-06-16,2,Planned,190,3.2,Friend's apartment,Golden Gate Bridge walk,,,
+Lake Tahoe,CA,39.0968,-120.0324,2026-06-18,1,Planned,200,3.3,Lakeside motel,Kayaking,,,
+Seattle,WA,47.6062,-122.3321,2026-06-19,3,Planned,830,12.5,Downtown hotel,Pike Place Market,,,
+,,,,,,,,,,,,,

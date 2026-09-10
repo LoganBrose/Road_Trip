@@ -16,14 +16,14 @@
   App.loadStops().then(({ rows: stops, usedDemo }) => {
     App.initPageChrome([usedDemo]);
 
-    const valid = stops.filter((s) => !isNaN(s.latitude) && !isNaN(s.longitude));
+    const valid = stops.filter((s) => s.latitude != null && s.longitude != null);
 
     // Pins, colored by status
     const markers = [];
     valid.forEach((stop) => {
       const color = App.statusColor(stop.status);
       const marker = L.circleMarker([stop.latitude, stop.longitude], {
-        radius: stop.status === "current" ? 11 : 8,
+        radius: 8,
         color: "#fff",
         weight: 2,
         fillColor: color,
@@ -34,6 +34,7 @@
         <h3>${escapeHtml(stop.name)}${stop.state ? ", " + escapeHtml(stop.state) : ""}</h3>
         <div><span class="status-badge" style="background:${color}">${App.statusLabel(stop.status)}</span></div>
         ${stop.arrival_date ? `<div class="popup-row">📅 ${App.formatDate(stop.arrival_date)}${stop.nights != null ? " · " + stop.nights + " night" + (stop.nights === 1 ? "" : "s") : ""}</div>` : ""}
+        ${stop.mileage != null ? `<div class="popup-row">🚗 ${stop.mileage.toLocaleString()} mi${stop.drive_hours != null ? " · " + stop.drive_hours + " hr" : ""}</div>` : ""}
         ${stop.accommodation ? `<div class="popup-row">🏠 ${escapeHtml(stop.accommodation)}</div>` : ""}
         ${stop.activity ? `<div class="popup-row">🎯 ${escapeHtml(stop.activity)}</div>` : ""}
         ${stop.weather ? `<div class="popup-row">☀️ ${escapeHtml(stop.weather)}</div>` : ""}
@@ -48,9 +49,9 @@
       map.fitBounds(group.getBounds().pad(0.15));
     }
 
-    // Line connecting visited stops (plus the current stop, as the "you are here" endpoint)
+    // Line connecting visited stops, in date order
     const path = valid
-      .filter((s) => s.status === "visited" || s.status === "current")
+      .filter((s) => s.status === "visited")
       .sort((a, b) => App.parseDate(a.arrival_date) - App.parseDate(b.arrival_date))
       .map((s) => [s.latitude, s.longitude]);
 
@@ -63,15 +64,14 @@
 
   function renderStats(stops) {
     const visited = stops.filter((s) => s.status === "visited");
-    const notDone = stops.filter((s) => s.status === "upcoming" || s.status === "current");
-    const countedForProgress = stops.filter((s) => s.status === "visited" || s.status === "current");
+    const planned = stops.filter((s) => s.status === "planned");
 
-    const nights = countedForProgress.reduce((sum, s) => sum + (s.nights || 0), 0);
-    const miles = countedForProgress.reduce((sum, s) => sum + (s.mileage || 0), 0);
-    const states = new Set(countedForProgress.map((s) => s.state).filter(Boolean));
+    const nights = visited.reduce((sum, s) => sum + (s.nights || 0), 0);
+    const miles = visited.reduce((sum, s) => sum + (s.mileage || 0), 0);
+    const states = new Set(visited.map((s) => s.state).filter(Boolean));
 
     App.$("#stat-visited").textContent = visited.length;
-    App.$("#stat-remaining").textContent = notDone.length;
+    App.$("#stat-remaining").textContent = planned.length;
     App.$("#stat-nights").textContent = nights;
     App.$("#stat-miles").textContent = miles.toLocaleString();
     App.$("#stat-states").textContent = states.size;

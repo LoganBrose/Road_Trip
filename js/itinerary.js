@@ -49,7 +49,7 @@
           App.el("div", { class: "stop-meta" }, [
             hasDate ? App.el("span", {}, ["📅 " + App.formatDate(stop.arrival_date)]) : null,
             stop.nights != null ? App.el("span", {}, ["🛌 " + stop.nights + " night" + (stop.nights === 1 ? "" : "s")]) : null,
-            stop.mileage != null ? App.el("span", {}, ["🚗 " + stop.mileage.toLocaleString() + " mi"]) : null,
+            stop.mileage != null ? App.el("span", {}, ["🚗 " + stop.mileage.toLocaleString() + " mi" + (stop.drive_hours != null ? " (" + stop.drive_hours + " hr)" : "")]) : null,
             stop.accommodation ? App.el("span", {}, ["🏠 " + stop.accommodation]) : null,
             stop.activity ? App.el("span", {}, ["🎯 " + stop.activity]) : null,
             stop.weather ? App.el("span", {}, ["☀️ " + stop.weather]) : null
