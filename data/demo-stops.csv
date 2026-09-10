@@ -1,12 +1,12 @@
 Stops
 18 stops planned · Cincinnati OH to Seattle WA
-Stop Name,State,Latitude,Longitude,Arrival Date,Nights,Status,Miles From Previous,Drive Hours,Accommodation,Main Activity,Rating (1-5),Weather,Notes
-Cincinnati,OH,39.1031,-84.5120,2026-06-01,0,Visited,0,0,Home,Trip departure,5,Clear 72F,Trip start
-St. Louis,MO,38.6270,-90.1994,2026-06-02,1,Visited,350,5.8,Motel near the Arch,Gateway Arch,4,Sunny 81F,Quick overnight stop
+Stop Name,State,Latitude,Longitude,Arrival Date,Nights,Status,Miles From Previous,Drive Hours,Accommodation,Main Activity,Rating (1-10),Weather,Notes
+Cincinnati,OH,39.1031,-84.5120,2026-06-01,0,Visited,0,0,Home,Trip departure,9,Clear 72F,Trip start
+St. Louis,MO,38.6270,-90.1994,2026-06-02,1,Visited,350,5.8,Motel near the Arch,Gateway Arch,7,Sunny 81F,Quick overnight stop
 Kansas City,MO,39.0997,-94.5786,2026-06-03,0,Skipped,250,,,,,,Ran short on time; drove straight through
-Denver,CO,39.7392,-104.9903,2026-06-04,2,Visited,600,9.5,Friend's apartment,Red Rocks Amphitheatre,5,Warm 78F,Altitude hit harder than expected
-Moab,UT,38.5733,-109.5498,2026-06-06,2,Visited,240,4,Airbnb,Arches National Park,5,Hot 95F,Delicate Arch at sunset was worth the heat
-Zion National Park,UT,37.2982,-113.0263,2026-06-08,3,Visited,150,2.8,Cabin near park entrance,Angels Landing hike,5,Hot 92F,Start hikes early to beat the heat
+Denver,CO,39.7392,-104.9903,2026-06-04,2,Visited,600,9.5,Friend's apartment,Red Rocks Amphitheatre,9,Warm 78F,Altitude hit harder than expected
+Moab,UT,38.5733,-109.5498,2026-06-06,2,Visited,240,4,Airbnb,Arches National Park,10,Hot 95F,Delicate Arch at sunset was worth the heat
+Zion National Park,UT,37.2982,-113.0263,2026-06-08,3,Visited,150,2.8,Cabin near park entrance,Angels Landing hike,10,Hot 92F,Start hikes early to beat the heat
 Grand Canyon South Rim,AZ,36.0544,-112.1401,2026-06-11,2,Current,230,4.1,Lodge,Rim trail hike,,,
 Las Vegas,NV,36.1699,-115.1398,2026-06-13,1,Planned,280,4.6,Hotel on the Strip,One night detour,,,
 Yosemite Valley,CA,37.8651,-119.5383,2026-06-14,2,Planned,400,6.7,Curry Village tent cabin,Half Dome hike,,,

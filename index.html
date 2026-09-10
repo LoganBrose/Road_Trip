@@ -6,7 +6,7 @@
 <title>Road Trip Map</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
 <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
-<link rel="stylesheet" href="css/style.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=13">
 </head>
 <body>
 <header class="site-header">
@@ -40,7 +40,14 @@
     <span><span class="dot" style="background:var(--skipped)"></span>Skipped</span>
   </div>
 
-  <div id="map"></div>
+  <div class="map-layout">
+    <div id="map"></div>
+    <aside class="card ranking-panel">
+      <h2 style="margin-top:0;">Top Rated Stops</h2>
+      <ol class="ranking-list" id="ranking-list"></ol>
+      <div class="empty-state" id="ranking-empty" hidden>No rated stops yet.</div>
+    </aside>
+  </div>
   <p id="debug-line" style="color:var(--text-muted);font-size:0.78rem;margin-top:8px;"></p>
 </main>
 
@@ -48,8 +55,8 @@
 
 <script src="vendor/leaflet/leaflet.js"></script>
 <script src="vendor/papaparse.min.js"></script>
-<script src="js/config.js?v=12"></script>
-<script src="js/data.js?v=12"></script>
-<script src="js/map.js?v=12"></script>
+<script src="js/config.js?v=13"></script>
+<script src="js/data.js?v=13"></script>
+<script src="js/map.js?v=13"></script>
 </body>
 </html>

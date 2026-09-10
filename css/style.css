@@ -127,14 +127,55 @@ h2 { font-size: 1.15rem; margin: 28px 0 12px; }
 .stat-box .label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.03em; }
 
 /* Map */
+.map-layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: flex-start;
+}
 #map {
+  flex: 1 1 500px;
+  min-width: 0;
   height: 62vh;
   min-height: 360px;
-  width: 100%;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--bg-deep);
 }
+
+.ranking-panel {
+  flex: 1 1 260px;
+  max-width: 100%;
+  max-height: 62vh;
+  overflow-y: auto;
+}
+.ranking-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.ranking-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ranking-rank {
+  flex: 0 0 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+.ranking-info .name { font-weight: 600; font-size: 0.88rem; }
+.ranking-info .score { color: var(--text-muted); font-size: 0.78rem; }
 
 .legend {
   display: flex;

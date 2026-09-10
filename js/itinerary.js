@@ -54,7 +54,7 @@
             stop.activity ? App.el("span", {}, ["🎯 " + stop.activity]) : null,
             stop.weather ? App.el("span", {}, ["☀️ " + stop.weather]) : null
           ].filter(Boolean)),
-          stop.rating ? App.el("div", { class: "stars" }, [App.ratingStars(stop.rating)]) : null,
+          stop.rating != null ? App.el("div", { class: "stars" }, [App.formatRating(stop.rating)]) : null,
           stop.notes ? App.el("div", { class: "stop-notes" }, [stop.notes]) : null
         ].filter(Boolean))
       ]);
