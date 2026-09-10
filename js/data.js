@@ -45,6 +45,15 @@ App.statusTextColor = function () {
   return STATUS_BADGE_TEXT;
 };
 
+// Some people type the state right into the Stop Name cell too (e.g. "Cincinnati, OH").
+// This avoids showing it twice when a separate State column also has a value.
+App.displayName = function (stop) {
+  if (!stop.state) return stop.name;
+  const suffix = ", " + stop.state;
+  if (stop.name.toLowerCase().endsWith(suffix.toLowerCase())) return stop.name;
+  return stop.name + suffix;
+};
+
 App.statusLabel = function (raw) {
   const s = App.normalizeStatus(raw);
   return s.charAt(0).toUpperCase() + s.slice(1);
@@ -244,6 +253,13 @@ App.loadBudget = () => App.loadSheetTab(CONFIG.BUDGET_CSV_URL, "data/demo-budget
 
 App.parseDate = function (str) {
   if (!str) return new Date(0);
+  // A plain "YYYY-MM-DD" string parses as UTC midnight in JS, which can then
+  // display as the previous day in timezones behind UTC. Build it as a local
+  // date instead so the date shown always matches what's typed in the sheet.
+  const isoMatch = String(str).trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoMatch) {
+    return new Date(Number(isoMatch[1]), Number(isoMatch[2]) - 1, Number(isoMatch[3]));
+  }
   const d = new Date(str);
   return isNaN(d) ? new Date(0) : d;
 };

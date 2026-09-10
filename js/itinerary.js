@@ -43,7 +43,7 @@
         ] : [App.el("div", { class: "month" }, ["TBD"])]),
         App.el("div", {}, [
           App.el("h3", {}, [
-            stop.name + (stop.state ? ", " + stop.state : ""),
+            App.displayName(stop),
             App.el("span", { class: "status-badge", style: `background:${color};color:${App.statusTextColor(stop.status)}` }, [App.statusLabel(stop.status)])
           ]),
           App.el("div", { class: "stop-meta" }, [
