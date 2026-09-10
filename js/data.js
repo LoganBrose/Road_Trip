@@ -43,11 +43,18 @@ App.isDemoUrl = function (url) {
   return !url || url.indexOf("PASTE_YOUR") !== -1;
 };
 
+// A tab's CONFIG entry is a list of candidate URLs to try in order (see js/config.js).
+// This filters out anything unusable, leaving only real, fetchable URLs.
+App.realUrls = function (urlOrUrls) {
+  const list = Array.isArray(urlOrUrls) ? urlOrUrls : (urlOrUrls ? [urlOrUrls] : []);
+  return list.filter((u) => !App.isDemoUrl(u));
+};
+
 App.inDemoMode = function () {
-  return App.isDemoUrl(CONFIG.STOPS_CSV_URL) &&
-         App.isDemoUrl(CONFIG.SPENDING_CSV_URL) &&
-         App.isDemoUrl(CONFIG.PHOTOS_CSV_URL) &&
-         App.isDemoUrl(CONFIG.BUDGET_CSV_URL);
+  return App.realUrls(CONFIG.STOPS_CSV_URL).length === 0 &&
+         App.realUrls(CONFIG.SPENDING_CSV_URL).length === 0 &&
+         App.realUrls(CONFIG.PHOTOS_CSV_URL).length === 0 &&
+         App.realUrls(CONFIG.BUDGET_CSV_URL).length === 0;
 };
 
 // Turns "$1,234.56" or "42 mi" or "" into a clean number, or null if there's nothing usable.
@@ -58,32 +65,41 @@ App.toNumber = function (v) {
 };
 
 /*
-  Fetches a tab's published CSV (or its demo fallback), parses the whole
-  thing into a 2D array of rows, then splits it into { headers, dataRows }
-  using headerRowIndex — this is how we skip the title/summary rows that
-  sit above the real header row on every tab.
+  Fetches a tab's data — trying each candidate URL in turn (see
+  App.realUrls; typically a gviz URL then a pub URL as backup) before
+  falling back to the bundled demo CSV — parses the whole thing into a 2D
+  array of rows, then splits it into { headers, dataRows } using
+  headerRowIndex. That's how we skip the title/summary rows that sit above
+  the real header row on every tab.
 */
-App.loadSheetTab = function (csvUrl, demoPath, headerRowIndex) {
-  const useReal = !App.isDemoUrl(csvUrl);
-  const target = useReal
-    ? csvUrl + (csvUrl.indexOf("?") === -1 ? "?" : "&") + "cachebust=" + Date.now()
-    : demoPath;
-
+App.loadSheetTab = function (csvUrlOrUrls, demoPath, headerRowIndex) {
+  const candidates = App.realUrls(csvUrlOrUrls);
   const parseText = (text) => Papa.parse(text, { skipEmptyLines: false }).data;
 
   const fetchDemo = () => fetch(demoPath).then((r) => r.text()).then((text) => ({
-    table: parseText(text), usedDemo: true, fetchFailed: useReal
+    table: parseText(text), usedDemo: true, fetchFailed: candidates.length > 0
   }));
 
-  return fetch(target)
-    .then((r) => { if (!r.ok) throw new Error("bad status " + r.status); return r.text(); })
-    .then((text) => ({ table: parseText(text), usedDemo: !useReal }))
-    .catch(fetchDemo)
-    .then(({ table, usedDemo, fetchFailed }) => {
-      const headers = (table[headerRowIndex] || []).map((h) => String(h || "").trim());
-      const dataRows = table.slice(headerRowIndex + 1);
-      return { headers, dataRows, usedDemo, fetchFailed };
+  const tryUrl = (url) => {
+    const target = url + (url.indexOf("?") === -1 ? "?" : "&") + "cachebust=" + Date.now();
+    return fetch(target).then((r) => {
+      if (!r.ok) throw new Error("bad status " + r.status);
+      return r.text();
     });
+  };
+
+  const tryNext = (i) => {
+    if (i >= candidates.length) return fetchDemo();
+    return tryUrl(candidates[i])
+      .then((text) => ({ table: parseText(text), usedDemo: false }))
+      .catch(() => tryNext(i + 1));
+  };
+
+  return tryNext(0).then(({ table, usedDemo, fetchFailed }) => {
+    const headers = (table[headerRowIndex] || []).map((h) => String(h || "").trim());
+    const dataRows = table.slice(headerRowIndex + 1);
+    return { headers, dataRows, usedDemo, fetchFailed };
+  });
 };
 
 // Maps one raw CSV row (an array of cell strings) to a plain object using
