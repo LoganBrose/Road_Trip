@@ -276,10 +276,9 @@ App.formatMoney = function (n) {
   return "$" + Number(n || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 };
 
-App.ratingStars = function (n) {
-  if (!n) return "";
-  const full = Math.round(n);
-  return "★".repeat(full) + "☆".repeat(Math.max(0, 5 - full));
+App.formatRating = function (n) {
+  if (n == null) return "";
+  return `⭐ ${n}/10`;
 };
 
 /*

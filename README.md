@@ -111,7 +111,7 @@ just want to know what the site expects, here's the exact layout:
 
 ### `Stops` — headers on row 3, data starts row 4
 
-| Stop Name | State | Latitude | Longitude | Arrival Date | Nights | Status | Miles From Previous | Drive Hours | Accommodation | Main Activity | Rating (1-5) | Weather | Notes |
+| Stop Name | State | Latitude | Longitude | Arrival Date | Nights | Status | Miles From Previous | Drive Hours | Accommodation | Main Activity | Rating (1-10) | Weather | Notes |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 
 - **Latitude / Longitude** — decimal degrees (longitude negative for the
@@ -131,6 +131,10 @@ just want to know what the site expects, here's the exact layout:
   need to fix blank Drive Hours cells.
 - Any row with a blank **Stop Name** is skipped automatically — safe to
   leave example rows or extra blank rows in the sheet.
+- **Rating (1-10)** — a number. Shows on each stop's card/popup, and any
+  `Visited` stop with a rating filled in appears in the "Top Rated Stops"
+  panel next to the map, ranked highest to lowest. Leave it blank until
+  you've actually been somewhere.
 
 ### `Spending` — headers on row 3, data starts row 4
 
@@ -341,9 +345,11 @@ A few things you might want to tweak, and where to find them:
 - **Map's starting position/zoom** — `MAP_START_VIEW` in `js/config.js`.
   (The map auto-zooms to fit your pins anyway, so this is just what shows
   for a split second before that happens.)
-- **The dark map tiles** — `js/map.js`, the `L.tileLayer(...)` call. It
-  currently uses CARTO's free "Dark Matter" tiles; swapping in a different
-  free tile provider just means changing that one URL and attribution line.
+- **The map tiles** — `js/map.js`, the `L.tileLayer(...)` call. Currently
+  plain OpenStreetMap tiles (chosen for reliability); swapping in a
+  different free tile provider just means changing that one URL and
+  attribution line.
+- **The route line color** — same `L.polyline(...)` call in `js/map.js`.
 - **Overall look** (dark theme colors, fonts, spacing) — CSS variables at
   the top of `css/style.css`, under `:root`. `--bg`/`--bg-deep` are the
   near-black/dark-navy backgrounds, `--surface` is the card color, `--accent`
@@ -351,6 +357,9 @@ A few things you might want to tweak, and where to find them:
 - **Site title** — `TRIP_NAME` in `js/config.js`.
 - **Adding a new status** — add it to `STATUS_COLORS` in `js/data.js`, its
   matching rule in `App.normalizeStatus`, and a legend entry in `index.html`.
+- **"Top Rated Stops" panel** — `renderRanking()` in `js/map.js`. Currently
+  shows `Visited` stops with a rating, best to worst; change the `.filter(...)`
+  there to include other statuses or drop the rating requirement.
 
 ---
 

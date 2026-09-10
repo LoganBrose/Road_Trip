@@ -39,7 +39,7 @@
         ${stop.accommodation ? `<div class="popup-row">🏠 ${escapeHtml(stop.accommodation)}</div>` : ""}
         ${stop.activity ? `<div class="popup-row">🎯 ${escapeHtml(stop.activity)}</div>` : ""}
         ${stop.weather ? `<div class="popup-row">☀️ ${escapeHtml(stop.weather)}</div>` : ""}
-        ${stop.rating ? `<div class="popup-row stars">${App.ratingStars(stop.rating)}</div>` : ""}
+        ${stop.rating != null ? `<div class="popup-row stars">${App.formatRating(stop.rating)}</div>` : ""}
         ${stop.notes ? `<div class="popup-row">${escapeHtml(stop.notes)}</div>` : ""}
       `);
       markers.push(marker);
@@ -63,6 +63,7 @@
     }
 
     renderStats(valid);
+    renderRanking(stops);
   });
 
   function renderStats(stops) {
@@ -80,6 +81,29 @@
     App.$("#stat-nights").textContent = nights;
     App.$("#stat-miles").textContent = miles.toLocaleString();
     App.$("#stat-states").textContent = states.size;
+  }
+
+  function renderRanking(stops) {
+    const list = App.$("#ranking-list");
+    const empty = App.$("#ranking-empty");
+    if (!list) return;
+
+    const ranked = stops
+      .filter((s) => s.status === "visited" && s.rating != null)
+      .sort((a, b) => b.rating - a.rating);
+
+    empty.hidden = ranked.length > 0;
+    list.innerHTML = "";
+    ranked.forEach((stop, i) => {
+      const li = App.el("li", {}, [
+        App.el("div", { class: "ranking-rank" }, [String(i + 1)]),
+        App.el("div", { class: "ranking-info" }, [
+          App.el("div", { class: "name" }, [App.displayName(stop)]),
+          App.el("div", { class: "score" }, [`${stop.rating}/10`])
+        ])
+      ]);
+      list.appendChild(li);
+    });
   }
 
   function renderDiagnostic(stops, valid, headers) {
