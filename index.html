@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Road Trip Map</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
+<link rel="stylesheet" href="vendor/leaflet/leaflet.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="index.html">🧭 <span id="trip-name">Road Trip</span></a>
+    <nav class="main-nav">
+      <a class="nav-link" href="index.html">Map</a>
+      <a class="nav-link" href="itinerary.html">Itinerary</a>
+      <a class="nav-link" href="spending.html">Spending</a>
+      <a class="nav-link" href="gallery.html">Photos</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <h1 id="trip-name-heading">Road Trip</h1>
+  <p class="subtitle">Live from our Google Sheet — updated from the road.</p>
+
+  <div class="stat-strip" id="stat-strip">
+    <div class="stat-box"><div class="num" id="stat-visited">–</div><div class="label">Stops visited</div></div>
+    <div class="stat-box"><div class="num" id="stat-remaining">–</div><div class="label">Stops to go</div></div>
+    <div class="stat-box"><div class="num" id="stat-nights">–</div><div class="label">Nights so far</div></div>
+    <div class="stat-box"><div class="num" id="stat-miles">–</div><div class="label">Miles driven</div></div>
+    <div class="stat-box"><div class="num" id="stat-states">–</div><div class="label">States visited</div></div>
+  </div>
+
+  <div class="legend">
+    <span><span class="dot" style="background:var(--visited)"></span>Visited</span>
+    <span><span class="dot" style="background:var(--current)"></span>Current stop</span>
+    <span><span class="dot" style="background:var(--upcoming)"></span>Upcoming</span>
+    <span><span class="dot" style="background:var(--skipped)"></span>Skipped</span>
+  </div>
+
+  <div id="map"></div>
+</main>
+
+<footer class="site-footer">Built with a Google Sheet, a map library, and love. See README.md to make this yours.</footer>
+
+<script src="vendor/leaflet/leaflet.js"></script>
+<script src="vendor/papaparse.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/map.js"></script>
+</body>
+</html>
