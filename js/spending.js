@@ -12,6 +12,12 @@
     App.initPageChrome([spendingRes.usedDemo, budgetRes.usedDemo]);
     renderSpending(spendingRes.rows);
     renderBudget(budgetRes.rows);
+
+    const el = App.$("#debug-line");
+    if (el) {
+      el.textContent = `Data check: ${spendingRes.rows.length} spending row${spendingRes.rows.length === 1 ? "" : "s"} loaded, ${budgetRes.rows.length} budget categor${budgetRes.rows.length === 1 ? "y" : "ies"} loaded.` +
+        (spendingRes.usedDemo || budgetRes.usedDemo ? " (using demo data — see banner above)" : "");
+    }
   });
 
   function renderSpending(rows) {
