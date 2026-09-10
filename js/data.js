@@ -127,44 +127,44 @@ App.mapRow = function (headers, rowArr, fieldDefs) {
 };
 
 const STOPS_FIELDS = [
-  { key: "name", match: /^stop name$/i },
-  { key: "state", match: /^state$/i },
+  { key: "name", match: /^stop name/i },
+  { key: "state", match: /^state/i },
   { key: "latitude", match: /^lat/i },
   { key: "longitude", match: /^lon|^lng/i },
-  { key: "arrival_date", match: /^arrival date$/i },
-  { key: "nights", match: /^nights$/i },
-  { key: "status", match: /^status$/i },
+  { key: "arrival_date", match: /^arrival date/i },
+  { key: "nights", match: /^nights/i },
+  { key: "status", match: /^status/i },
   { key: "mileage", match: /^miles/i },
-  { key: "drive_hours", match: /^drive hours$/i },
-  { key: "accommodation", match: /^accommodation$/i },
-  { key: "activity", match: /^main activity$/i },
+  { key: "drive_hours", match: /^drive hours/i },
+  { key: "accommodation", match: /^accommodation/i },
+  { key: "activity", match: /^(main\s+)?activity/i },
   { key: "rating", match: /^rating/i },
-  { key: "weather", match: /^weather$/i },
-  { key: "notes", match: /^notes$/i }
+  { key: "weather", match: /^weather/i },
+  { key: "notes", match: /^notes/i }
 ];
 
 const SPENDING_FIELDS = [
-  { key: "date", match: /^date$/i },
-  { key: "category", match: /^category$/i },
-  { key: "amount", match: /^amount$/i },
-  { key: "stop", match: /^stop/i }, // "Stop / Location"
+  { key: "date", match: /^date/i },
+  { key: "category", match: /^category/i },
+  { key: "amount", match: /^amount/i },
+  { key: "stop", match: /^stop|^location/i }, // "Stop / Location"
   { key: "payment_method", match: /^payment/i },
-  { key: "notes", match: /^notes$/i }
+  { key: "notes", match: /^notes/i }
 ];
 
 const PHOTOS_FIELDS = [
-  { key: "stop", match: /^stop name$/i },
-  { key: "date", match: /^date$/i },
-  { key: "photo_url", match: /^image url$/i },
-  { key: "caption", match: /^caption$/i }
+  { key: "stop", match: /^stop name/i },
+  { key: "date", match: /^date/i },
+  { key: "photo_url", match: /^image url|^photo url|^url/i },
+  { key: "caption", match: /^caption/i }
 ];
 
 const BUDGET_FIELDS = [
-  { key: "category", match: /^category$/i },
-  { key: "planned", match: /^planned$/i },
-  { key: "actual", match: /^actual$/i },
-  { key: "remaining", match: /^remaining$/i },
-  { key: "notes", match: /^notes$/i }
+  { key: "category", match: /^category/i },
+  { key: "planned", match: /^planned/i },
+  { key: "actual", match: /^actual/i },
+  { key: "remaining", match: /^remaining/i },
+  { key: "notes", match: /^notes/i }
 ];
 
 App.loadStops = () => App.loadSheetTab(CONFIG.STOPS_CSV_URL, "data/demo-stops.csv", HEADER_ROW_INDEX)
