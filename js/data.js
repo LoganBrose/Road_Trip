@@ -130,7 +130,7 @@ const STOPS_FIELDS = [
   { key: "name", match: /^stop name$/i },
   { key: "state", match: /^state$/i },
   { key: "latitude", match: /^lat/i },
-  { key: "longitude", match: /^long/i },
+  { key: "longitude", match: /^lon|^lng/i },
   { key: "arrival_date", match: /^arrival date$/i },
   { key: "nights", match: /^nights$/i },
   { key: "status", match: /^status$/i },
