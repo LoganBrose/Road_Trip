@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Spending</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧭</text></svg>">
-<link rel="stylesheet" href="css/style.css?v=15">
+<link rel="stylesheet" href="css/style.css?v=16">
 </head>
 <body>
 <header class="site-header">
@@ -23,6 +23,7 @@
 <main>
   <h1>Spending</h1>
   <p class="subtitle">Pulled straight from the Spending tab.</p>
+  <div class="empty-state" id="empty-state" hidden>No spending logged yet.</div>
 
   <div class="spend-summary-grid">
     <div class="card">
@@ -57,24 +58,15 @@
     </table>
   </div>
   <div class="empty-state" id="budget-empty" hidden>No budget set up yet.</div>
-
-  <h2>All transactions</h2>
-  <div style="overflow-x:auto;">
-    <table class="spend-table" id="tx-table">
-      <thead><tr><th>Date</th><th>Stop</th><th>Category</th><th>Amount</th><th>Payment</th><th>Notes</th></tr></thead>
-      <tbody></tbody>
-    </table>
-  </div>
-  <div class="empty-state" id="empty-state" hidden>No spending logged yet.</div>
   <p id="debug-line" style="color:var(--text-muted);font-size:0.78rem;margin-top:8px;"></p>
 </main>
 
-<footer class="site-footer">Built with a Google Sheet, a map library, and love. See README.md to make this yours.</footer>
+<footer class="site-footer">Built with a Google Sheet, a map library, and love.</footer>
 
 <script src="vendor/papaparse.min.js"></script>
 <script src="vendor/chart.umd.js"></script>
-<script src="js/config.js?v=15"></script>
-<script src="js/data.js?v=15"></script>
-<script src="js/spending.js?v=15"></script>
+<script src="js/config.js?v=16"></script>
+<script src="js/data.js?v=16"></script>
+<script src="js/spending.js?v=16"></script>
 </body>
 </html>
