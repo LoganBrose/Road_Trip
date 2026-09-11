@@ -359,12 +359,3 @@ table.spend-table th { color: var(--text-muted); font-weight: 600; font-size: 0.
   color: var(--text-muted);
   padding: 40px 20px;
 }
-
-footer.site-footer {
-  background: var(--bg-deep);
-  text-align: center;
-  color: var(--text-muted);
-  font-size: 0.8rem;
-  padding: 30px 16px 50px;
-  margin-top: 20px;
-}
