@@ -1,6 +1,6 @@
 /*
-  spending.js — totals, a category breakdown chart, the trip budget
-  (from the Budget tab), and a full transaction table.
+  spending.js — totals, a category breakdown chart, and the trip budget
+  (from the Budget tab).
 */
 (function () {
   document.title = CONFIG.TRIP_NAME + " — Spending";
@@ -58,20 +58,6 @@
           legend: { position: "bottom", labels: { boxWidth: 12, font: { size: 11 }, color: "#e7e9ee" } }
         }
       }
-    });
-
-    // Transaction table, most recent first
-    const txBody = App.$("#tx-table tbody");
-    [...rows].reverse().forEach((r) => {
-      const tr = App.el("tr", {}, [
-        App.el("td", {}, [App.formatDate(r.date)]),
-        App.el("td", {}, [r.stop || "—"]),
-        App.el("td", {}, [r.category]),
-        App.el("td", {}, [App.formatMoney(r.amount)]),
-        App.el("td", {}, [r.payment_method || ""]),
-        App.el("td", {}, [r.notes || ""])
-      ]);
-      txBody.appendChild(tr);
     });
   }
 
