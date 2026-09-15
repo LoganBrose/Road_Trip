@@ -59,7 +59,7 @@
     const path = coords(valid.filter((s) => s.status === "visited" || s.status === "current"));
 
     if (path.length > 1) {
-      L.polyline(path, { color: "#5dade2", weight: 3, opacity: 0.8, dashArray: "6 6" }).addTo(map);
+      L.polyline(path, { color: "#5dade2", weight: 3, opacity: 0.9 }).addTo(map);
     }
 
     // The road ahead: today's stop onward through what's still planned, so the

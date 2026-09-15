@@ -202,7 +202,7 @@ h2 { font-size: 1.15rem; margin: 28px 0 12px; }
   margin-right: 5px;
   vertical-align: middle;
 }
-.legend .line.driven { border-top: 3px dashed #5dade2; }
+.legend .line.driven { border-top: 3px solid #5dade2; }
 .legend .line.ahead { border-top: 2px dashed var(--planned); opacity: 0.6; }
 
 .status-badge {
