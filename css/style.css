@@ -194,6 +194,16 @@ h2 { font-size: 1.15rem; margin: 28px 0 12px; }
   margin-right: 5px;
   vertical-align: middle;
 }
+/* Swatches for the two route lines, drawn to match the map's own dashes. */
+.legend .line {
+  display: inline-block;
+  width: 16px;
+  height: 0;
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.legend .line.driven { border-top: 3px solid #5dade2; }
+.legend .line.ahead { border-top: 2px dashed var(--planned); opacity: 0.6; }
 
 .status-badge {
   display: inline-block;
@@ -312,6 +322,8 @@ table.spend-table th, table.spend-table td {
 }
 table.spend-table th { color: var(--text-muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; }
 .chart-wrap { max-width: 520px; margin: 0 auto 8px; }
+/* The cumulative-spend line wants the full card width, not the doughnut's square. */
+.chart-wrap.wide { max-width: none; height: 240px; }
 
 /* Gallery */
 .gallery-group { margin-bottom: 26px; }
@@ -353,6 +365,29 @@ table.spend-table th { color: var(--text-muted); font-weight: 600; font-size: 0.
   cursor: pointer;
   line-height: 1;
 }
+
+/* Paging arrows. Sized for a thumb (44px) rather than a mouse pointer. */
+.lightbox .nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text);
+  font-size: 2.2rem;
+  background: rgba(0, 0, 0, 0.35);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0 0 4px;
+}
+.lightbox .nav-btn:hover { background: rgba(255, 255, 255, 0.15); }
+.lightbox .nav-btn.prev { left: 12px; }
+.lightbox .nav-btn.next { right: 12px; }
 
 .empty-state {
   text-align: center;

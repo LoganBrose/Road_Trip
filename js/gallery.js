@@ -1,6 +1,7 @@
 /*
   gallery.js — groups photos by stop (in the order stops happened) and
-  shows a simple click-to-enlarge lightbox. No dependencies needed.
+  shows a click-to-enlarge lightbox you can page through with the arrow
+  buttons, the keyboard, or a swipe. No dependencies needed.
 */
 (function () {
   document.title = CONFIG.TRIP_NAME + " — Photos";
@@ -33,13 +34,15 @@
 
     const container = App.$("#gallery-container");
     groupNames.forEach((name) => {
+      const groupPhotos = groups[name];
       const grid = App.el("div", { class: "gallery-grid" },
-        groups[name].map((p) => {
+        groupPhotos.map((p, i) => {
           const thumb = App.driveImageUrl(p.photo_url, 500);
           const item = App.el("div", { class: "gallery-item" }, [
             App.el("img", { src: thumb, alt: p.caption || name, loading: "lazy" })
           ]);
-          item.addEventListener("click", () => openLightbox(p));
+          // Opens the whole group, starting here, so you can page through it.
+          item.addEventListener("click", () => openLightbox(groupPhotos, i));
           return item;
         })
       );
@@ -50,20 +53,82 @@
     });
   });
 
-  function openLightbox(photo) {
-    const box = App.el("div", { class: "lightbox" }, [
-      App.el("button", { class: "close-btn", "aria-label": "Close" }, ["×"]),
-      App.el("img", { src: App.driveImageUrl(photo.photo_url, 1400), alt: photo.caption || photo.stop }),
-      App.el("div", { class: "caption" }, [
-        [photo.stop, App.formatDate(photo.date)].filter(Boolean).join(" · ") + (photo.caption ? " — " + photo.caption : "")
-      ])
-    ]);
+  /*
+    Opens one stop's photos, starting at startIndex. Paging wraps around at
+    both ends, so there's no dead-end arrow to notice.
+  */
+  function openLightbox(photos, startIndex) {
+    let index = startIndex;
+
+    const img = App.el("img", {});
+    const caption = App.el("div", { class: "caption" }, []);
+    const closeBtn = App.el("button", { class: "close-btn", "aria-label": "Close" }, ["×"]);
+    const prevBtn = App.el("button", { class: "nav-btn prev", "aria-label": "Previous photo" }, ["‹"]);
+    const nextBtn = App.el("button", { class: "nav-btn next", "aria-label": "Next photo" }, ["›"]);
+
+    // A stop with a single photo has nothing to page to.
+    if (photos.length < 2) {
+      prevBtn.hidden = true;
+      nextBtn.hidden = true;
+    }
+
+    const box = App.el("div", { class: "lightbox" }, [closeBtn, prevBtn, img, nextBtn, caption]);
+
+    const at = (i) => photos[(i + photos.length) % photos.length];
+
+    // Fetches a neighbouring photo into the browser cache so paging to it
+    // shows the image instead of a blank gap while it downloads.
+    function preload(i) {
+      if (photos.length < 2) return;
+      new Image().src = App.driveImageUrl(at(i).photo_url, 1400);
+    }
+
+    function showPhoto(i) {
+      index = (i + photos.length) % photos.length;
+      const photo = photos[index];
+      img.src = App.driveImageUrl(photo.photo_url, 1400);
+      img.alt = photo.caption || photo.stop;
+      caption.textContent =
+        [photo.stop, App.formatDate(photo.date)].filter(Boolean).join(" · ") +
+        (photo.caption ? " — " + photo.caption : "");
+      preload(index + 1);
+      preload(index - 1);
+    }
+
+    const step = (delta) => showPhoto(index + delta);
+
+    function close() {
+      box.remove();
+      document.removeEventListener("keydown", onKey);
+    }
+
+    function onKey(e) {
+      if (e.key === "Escape") close();
+      else if (e.key === "ArrowLeft") step(-1);
+      else if (e.key === "ArrowRight") step(1);
+    }
+
+    prevBtn.addEventListener("click", (e) => { e.stopPropagation(); step(-1); });
+    nextBtn.addEventListener("click", (e) => { e.stopPropagation(); step(1); });
+
     box.addEventListener("click", (e) => {
-      if (e.target === box || e.target.classList.contains("close-btn")) box.remove();
+      if (e.target === box || e.target === closeBtn) close();
     });
-    document.addEventListener("keydown", function onKey(e) {
-      if (e.key === "Escape") { box.remove(); document.removeEventListener("keydown", onKey); }
-    });
+    document.addEventListener("keydown", onKey);
+
+    // Swipe left/right — this mostly gets looked at on a phone.
+    let touchStartX = null;
+    box.addEventListener("touchstart", (e) => {
+      touchStartX = e.changedTouches[0].clientX;
+    }, { passive: true });
+    box.addEventListener("touchend", (e) => {
+      if (touchStartX == null) return;
+      const dx = e.changedTouches[0].clientX - touchStartX;
+      touchStartX = null;
+      if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1);
+    }, { passive: true });
+
+    showPhoto(startIndex);
     document.body.appendChild(box);
   }
 })();
