@@ -322,6 +322,8 @@ table.spend-table th, table.spend-table td {
 }
 table.spend-table th { color: var(--text-muted); font-weight: 600; font-size: 0.78rem; text-transform: uppercase; }
 .chart-wrap { max-width: 520px; margin: 0 auto 8px; }
+/* The cumulative-spend line wants the full card width, not the doughnut's square. */
+.chart-wrap.wide { max-width: none; height: 240px; }
 
 /* Gallery */
 .gallery-group { margin-bottom: 26px; }

@@ -31,6 +31,10 @@
         <div class="num" id="spend-total">–</div>
         <div class="label">Total spent</div>
       </div>
+      <div class="stat-box" style="border:none;padding:0;margin-top:12px;">
+        <div class="num" id="spend-per-day">–</div>
+        <div class="label">Per day</div>
+      </div>
       <div id="budget-wrap" hidden>
         <div class="popup-row" id="budget-text" style="margin-top:10px;"></div>
         <div class="budget-bar-track"><div class="budget-bar-fill" id="budget-bar-fill" style="width:0%"></div></div>
@@ -41,10 +45,23 @@
     </div>
   </div>
 
+  <h2>Over time</h2>
+  <div class="card">
+    <div class="chart-wrap wide"><canvas id="over-time-chart"></canvas></div>
+  </div>
+
   <h2>By category</h2>
   <div style="overflow-x:auto;">
     <table class="spend-table" id="category-table">
       <thead><tr><th>Category</th><th>Total</th><th>% of trip</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <h2>By stop</h2>
+  <div style="overflow-x:auto;">
+    <table class="spend-table" id="stop-table">
+      <thead><tr><th>Stop</th><th>Total</th><th>% of trip</th></tr></thead>
       <tbody></tbody>
     </table>
   </div>
