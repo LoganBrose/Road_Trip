@@ -52,14 +52,28 @@
 
     renderDiagnostic(stops, valid, headers);
 
+    const byDate = (a, b) => App.parseDate(a.arrival_date) - App.parseDate(b.arrival_date);
+    const coords = (list) => list.sort(byDate).map((s) => [s.latitude, s.longitude]);
+
     // Line connecting visited stops, through today's (current) stop, in date order
-    const path = valid
-      .filter((s) => s.status === "visited" || s.status === "current")
-      .sort((a, b) => App.parseDate(a.arrival_date) - App.parseDate(b.arrival_date))
-      .map((s) => [s.latitude, s.longitude]);
+    const path = coords(valid.filter((s) => s.status === "visited" || s.status === "current"));
 
     if (path.length > 1) {
       L.polyline(path, { color: "#5dade2", weight: 3, opacity: 0.8, dashArray: "6 6" }).addTo(map);
+    }
+
+    // The road ahead: today's stop onward through what's still planned, so the
+    // shape of the rest of the trip shows up instead of a scatter of loose pins.
+    // Starting at the current stop is what joins this line to the one above.
+    const ahead = coords(valid.filter((s) => s.status === "current" || s.status === "planned"));
+
+    if (ahead.length > 1) {
+      L.polyline(ahead, {
+        color: App.STATUS_COLORS.planned,
+        weight: 2,
+        opacity: 0.5,
+        dashArray: "2 8"
+      }).addTo(map);
     }
 
     renderStats(valid);
