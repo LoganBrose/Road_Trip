@@ -394,3 +394,133 @@ table.spend-table th { color: var(--text-muted); font-weight: 600; font-size: 0.
   color: var(--text-muted);
   padding: 40px 20px;
 }
+
+/* ---------------------------------------------------------------------------
+   "Right now" strip — the one-line answer to where the trip currently is.
+   --------------------------------------------------------------------------- */
+.now-strip {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface-alt) 100%);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--current);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 14px;
+}
+.now-strip .now-text {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+.now-strip .now-progress {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+}
+.now-strip .budget-bar-track { flex: 1; margin-top: 0; }
+.now-strip .budget-bar-fill { background: var(--visited); transition: width 900ms ease-out; }
+.now-strip .now-progress-label {
+  font-size: 0.76rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------------------------
+   Trip playback — the on-map play button, the moving car, and its HUD.
+   --------------------------------------------------------------------------- */
+.playback-control { margin: 0 0 8px 8px; }
+.playback-btn {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  box-shadow: var(--shadow);
+}
+.playback-btn:hover { background: var(--surface-alt); }
+
+.trip-car {
+  font-size: 22px;
+  line-height: 28px;
+  text-align: center;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.7));
+}
+
+.trip-hud {
+  background: rgba(26, 30, 41, 0.92);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 10px 14px;
+  min-width: 150px;
+  margin: 8px 8px 0 0;
+}
+.trip-hud .hud-name { font-weight: 700; font-size: 0.95rem; }
+.trip-hud .hud-sub { color: var(--text-muted); font-size: 0.78rem; }
+
+/* ---------------------------------------------------------------------------
+   Cross-links between the map, the itinerary, the gallery and spending.
+   --------------------------------------------------------------------------- */
+.popup-thumb {
+  width: 100%;
+  height: 110px;
+  object-fit: cover;
+  border-radius: 6px;
+  display: block;
+  margin-bottom: 8px;
+}
+.popup-links {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+.popup-links a { font-size: 0.82rem; text-decoration: none; }
+.popup-links a:hover { text-decoration: underline; }
+
+.stop-card h3 .stop-link { color: var(--text); text-decoration: none; }
+.stop-card h3 .stop-link:hover { color: var(--accent); }
+
+.photo-chip {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 2px 9px;
+  text-decoration: none;
+}
+.photo-chip:hover { color: var(--text); border-color: var(--accent); }
+
+.ranking-info .name { color: var(--text); text-decoration: none; }
+.ranking-info .name:hover { color: var(--accent); }
+
+.gallery-group h2 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.group-map-link { font-size: 0.78rem; font-weight: 500; text-decoration: none; }
+.group-map-link:hover { text-decoration: underline; }
+
+/* A group or table row arrived at via #stop=… gets a moment of emphasis. */
+.gallery-group.is-target h2,
+.spend-table tr.is-target td {
+  animation: target-flash 2.4s ease-out;
+}
+@keyframes target-flash {
+  0%, 40% { background: rgba(74, 144, 196, 0.22); }
+  100% { background: transparent; }
+}
+.gallery-group.is-target h2 { border-radius: 6px; padding-left: 6px; margin-left: -6px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

@@ -13,11 +13,16 @@
     renderSpending(spendingRes.rows);
     renderBudget(budgetRes.rows);
 
+    // Troubleshooting aid for a sheet that isn't loading — see README section 10.
+    // Hidden unless ?debug=1 is in the URL, so visitors never see it.
     const el = App.$("#debug-line");
-    if (el) {
+    if (el && App.isDebug()) {
       el.textContent = `Data check: ${spendingRes.rows.length} spending row${spendingRes.rows.length === 1 ? "" : "s"} loaded, ${budgetRes.rows.length} budget categor${budgetRes.rows.length === 1 ? "y" : "ies"} loaded.` +
         (spendingRes.usedDemo || budgetRes.usedDemo ? " (using demo data — see banner above)" : "");
+      el.hidden = false;
     }
+
+    highlightStopFromHash();
   });
 
   const DAY_MS = 24 * 60 * 60 * 1000;
@@ -37,15 +42,28 @@
       .map((key) => ({ key, amount: totals[key] }));
   }
 
-  function fillBreakdownTable(selector, entries, total) {
+  // withSlug tags each row with its stop slug, which is what lets a map popup
+  // link straight to a stop's row (spending.html#stop=st-louis).
+  function fillBreakdownTable(selector, entries, total, withSlug) {
     const tbody = App.$(selector);
     entries.forEach(({ key, amount }) => {
-      tbody.appendChild(App.el("tr", {}, [
+      const attrs = withSlug ? { "data-slug": App.stopSlug(key) } : {};
+      tbody.appendChild(App.el("tr", attrs, [
         App.el("td", {}, [key]),
         App.el("td", {}, [App.formatMoney(amount)]),
         App.el("td", {}, [((amount / total) * 100).toFixed(1) + "%"])
       ]));
     });
+  }
+
+  function highlightStopFromHash() {
+    const m = location.hash.match(/^#stop=(.+)$/);
+    if (!m) return;
+    const slug = decodeURIComponent(m[1]);
+    const row = App.$(`#stop-table tbody tr[data-slug="${slug}"]`);
+    if (!row) return;
+    row.classList.add("is-target");
+    row.scrollIntoView({ behavior: App.reducedMotion() ? "auto" : "smooth", block: "center" });
   }
 
   function renderSpending(rows) {
@@ -64,7 +82,7 @@
 
     // Stop breakdown — which places the money actually went to. The Spending
     // tab's "Stop / Location" column is blank often enough to need a bucket.
-    fillBreakdownTable("#stop-table tbody", totalsBy(rows, (r) => r.stop || "Unassigned"), total);
+    fillBreakdownTable("#stop-table tbody", totalsBy(rows, (r) => r.stop || "Unassigned"), total, true);
 
     renderOverTime(rows);
 

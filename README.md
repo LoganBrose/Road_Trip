@@ -79,9 +79,13 @@ Road_Trip/
 │   ├── config.js         *** THE FILE YOU EDIT *** — your sheet's URLs & settings
 │   ├── data.js           Shared helpers: fetching/parsing the sheet, formatting
 │   ├── map.js            Logic just for index.html
+│   ├── route.js          Asks a routing service for real road geometry (map only)
+│   ├── playback.js       The "Play the trip" animation (map only)
 │   ├── itinerary.js      Logic just for itinerary.html
 │   ├── spending.js       Logic just for spending.html
 │   └── gallery.js        Logic just for gallery.html
+├── assets/
+│   └── og-cover.png     The preview image shown when the link is shared
 ├── data/
 │   └── demo-*.csv        Sample data so the site works before/without a sheet
 └── vendor/               Copies of the 3rd-party code libraries the site uses
@@ -218,7 +222,9 @@ again (map pins vanish, totals show $0, nights/miles disappear) while text
 fields still work, this is the first thing to suspect — check the
 `Data check: ...` diagnostic line under the Map and Spending pages, which
 shows the actual column headers the site read; blank entries there mean
-whichever endpoint answered first is doing this again.
+whichever endpoint answered first is doing this again. That line is hidden
+from ordinary visitors — add `?debug=1` to the address to see it (e.g.
+`.../index.html?debug=1`).
 
 Editing the sheet's *contents* never requires touching this file or
 redeploying anything — the site re-fetches the CSVs fresh every time
@@ -346,10 +352,22 @@ A few things you might want to tweak, and where to find them:
   (The map auto-zooms to fit your pins anyway, so this is just what shows
   for a split second before that happens.)
 - **The map tiles** — `js/map.js`, the `L.tileLayer(...)` call. Currently
-  plain OpenStreetMap tiles (chosen for reliability); swapping in a
-  different free tile provider just means changing that one URL and
+  CARTO's free dark basemap, which suits the site's dark theme; swapping in
+  a different free tile provider just means changing that one URL and
   attribution line.
-- **The route line color** — same `L.polyline(...)` call in `js/map.js`.
+- **The route line color** — the `L.polyline(...)` calls in `js/map.js`.
+- **Real roads vs. straight lines** — `js/route.js` asks the free public
+  OSRM service for the actual driving geometry between your stops, so the
+  route follows highways instead of cutting across country. If that service
+  is slow or unreachable the site quietly keeps the straight lines, so
+  nothing breaks either way. Delete the two `App.fetchRoadRoute(...)` calls
+  in `js/map.js` to always use straight lines.
+- **The trip playback** — `js/playback.js`; the speed knobs (`MIN_RUN_MS`,
+  `MAX_RUN_MS`, `PAUSE_AT_STOP_MS`) are at the top of that file.
+- **The share preview** (the card that appears when you text someone the
+  link) — the `og:` and `twitter:` `<meta>` tags in each HTML file's
+  `<head>`, and the image at `assets/og-cover.png`. These contain the site's
+  full address, so if you ever rename the repository, update them to match.
 - **Overall look** (dark theme colors, fonts, spacing) — CSS variables at
   the top of `css/style.css`, under `:root`. `--bg`/`--bg-deep` are the
   near-black/dark-navy backgrounds, `--surface` is the card color, `--accent`
@@ -389,11 +407,18 @@ This is the numeric-column-header bug described in
 [section 4](#4-how-the-site-is-connected-to-the-sheet) — the `gviz`
 endpoint answered instead of `pub` and blanked out a numeric column's
 header. Check the small `Data check: ...` line under the Map page (and the
-similar one under Spending) — it lists the exact headers the site read; any
+similar one under Spending) — add `?debug=1` to the address to show it, e.g.
+`.../index.html?debug=1`. It lists the exact headers the site read; any
 blank entries confirm this. Usually this resolves itself (the site retries
 `pub` first on every page load), but if it persists, `pub` may have
 stopped working entirely — re-check that the sheet is still published
 (same fix as the first item in this list).
+
+**The route is drawn as straight lines between stops, not along roads.**
+Nothing is broken. The site asks a free public routing service for the real
+road geometry, and falls back to straight lines whenever that service is
+slow, busy or unreachable. Reloading usually picks it up. Trips longer than
+25 stops always use straight lines.
 
 **A photo won't load (broken image icon).**
 Usually the Drive file's sharing isn't set to "Anyone with the link," or it

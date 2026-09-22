@@ -300,6 +300,30 @@ App.driveImageUrl = function (url, width) {
   return url;
 };
 
+/*
+  Turns a stop name into a URL-safe slug ("St. Louis" -> "st-louis"), used to
+  cross-link the pages to each other. The Photos and Spending tabs record a
+  stop as free text, so matching is done slug-to-slug rather than on the raw
+  string — that way "St. Louis" and "St Louis" still land on the same stop.
+*/
+App.stopSlug = function (name) {
+  return String(name || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+};
+
+// The "Data check: ..." diagnostic lines are for troubleshooting a sheet that
+// isn't loading, not for visitors — so they only appear with ?debug=1 in the URL.
+App.isDebug = function () {
+  return new URLSearchParams(location.search).has("debug");
+};
+
+// Whether to skip animations, for people who've asked their system for less motion.
+App.reducedMotion = function () {
+  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+};
+
 // Small DOM helpers
 App.$ = (sel, ctx) => (ctx || document).querySelector(sel);
 App.$$ = (sel, ctx) => Array.from((ctx || document).querySelectorAll(sel));
