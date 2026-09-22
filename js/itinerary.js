@@ -1,17 +1,31 @@
 /*
   itinerary.js — renders every stop as a card, in date order, with a
-  status filter (All / Visited / Current / Upcoming).
+  status filter (All / Visited / Current / Planned / Skipped).
+
+  Each card's title links back to that pin on the map, and a stop with photos
+  gets a count that links into the gallery — so the list is a way into the rest
+  of the site rather than a dead end.
 */
 (function () {
   document.title = CONFIG.TRIP_NAME + " — Itinerary";
   App.$("#trip-name").textContent = CONFIG.TRIP_NAME;
 
   let allStops = [];
+  let photoCounts = {};
   let activeFilter = "all";
 
-  App.loadStops().then(({ rows: stops, usedDemo }) => {
-    App.initPageChrome([usedDemo]);
-    allStops = stops;
+  // A failed Photos tab just means no photo counts — the list still renders.
+  const optional = (promise) => promise.catch(() => ({ rows: [], usedDemo: false }));
+
+  Promise.all([App.loadStops(), optional(App.loadPhotos())]).then(([stopsRes, photosRes]) => {
+    App.initPageChrome([stopsRes.usedDemo]);
+    allStops = stopsRes.rows;
+
+    photosRes.rows.forEach((p) => {
+      const slug = App.stopSlug(p.stop);
+      if (slug) photoCounts[slug] = (photoCounts[slug] || 0) + 1;
+    });
+
     render();
   });
 
@@ -35,6 +49,8 @@
       const d = App.parseDate(stop.arrival_date);
       const hasDate = stop.arrival_date && d.getTime() !== 0;
       const color = App.statusColor(stop.status);
+      const slug = App.stopSlug(stop.name);
+      const photos = photoCounts[slug] || 0;
 
       const card = App.el("div", { class: "card stop-card" }, [
         App.el("div", { class: "date-col" }, hasDate ? [
@@ -43,9 +59,10 @@
         ] : [App.el("div", { class: "month" }, ["TBD"])]),
         App.el("div", {}, [
           App.el("h3", {}, [
-            App.displayName(stop),
-            App.el("span", { class: "status-badge", style: `background:${color};color:${App.statusTextColor(stop.status)}` }, [App.statusLabel(stop.status)])
-          ]),
+            App.el("a", { class: "stop-link", href: "index.html#stop=" + slug, title: "See this stop on the map" }, [App.displayName(stop)]),
+            App.el("span", { class: "status-badge", style: `background:${color};color:${App.statusTextColor(stop.status)}` }, [App.statusLabel(stop.status)]),
+            photos ? App.el("a", { class: "photo-chip", href: "gallery.html#stop=" + slug }, ["📷 " + photos]) : null
+          ].filter(Boolean)),
           App.el("div", { class: "stop-meta" }, [
             hasDate ? App.el("span", {}, ["📅 " + App.formatDate(stop.arrival_date)]) : null,
             stop.nights != null ? App.el("span", {}, ["🛌 " + stop.nights + " night" + (stop.nights === 1 ? "" : "s")]) : null,

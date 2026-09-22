@@ -46,12 +46,32 @@
           return item;
         })
       );
-      container.appendChild(App.el("div", { class: "gallery-group" }, [
-        App.el("h2", {}, [name]),
+      const slug = App.stopSlug(name);
+      container.appendChild(App.el("div", { class: "gallery-group", id: "stop-" + slug }, [
+        App.el("h2", {}, [
+          name,
+          App.el("a", { class: "group-map-link", href: "index.html#stop=" + slug }, ["View on map →"])
+        ]),
         grid
       ]));
     });
+
+    scrollToHashGroup();
   });
+
+  /*
+    Arriving from a map popup or an itinerary card (gallery.html#stop=st-louis)
+    should land on that stop's photos rather than the top of the page. The hash
+    isn't a plain element id, so the scroll is done here by hand.
+  */
+  function scrollToHashGroup() {
+    const m = location.hash.match(/^#stop=(.+)$/);
+    if (!m) return;
+    const group = document.getElementById("stop-" + decodeURIComponent(m[1]));
+    if (!group) return;
+    group.scrollIntoView({ behavior: App.reducedMotion() ? "auto" : "smooth", block: "start" });
+    group.classList.add("is-target");
+  }
 
   /*
     Opens one stop's photos, starting at startIndex. Paging wraps around at
